@@ -3,11 +3,11 @@
 ## Description
 This project includes implementations of both the basic and recursive versions of the Erlang-B formula.
 
-#Basic Erlang-B formula. This is restricted to systems with C ≤ 170 b.u.
+### Basic Erlang-B formula. This is restricted to systems with C ≤ 170 b.u.
 
 ![Basic Erlang-b Formula](images/erlang-b.png)
 
-#Recursive Erlang-B formula.
+### Recursive Erlang-B formula.
 
 ![Basic Erlang-b Formula](images/recurrent-erlang.png)
 
