@@ -3,10 +3,12 @@
 ## Description
 This project includes implementations of both the basic and recursive versions of the Erlang-B formula.
 
-Basic Erlang-B formula. This is restricted to systems with C ≤ 170 b.u.
+#Basic Erlang-B formula. This is restricted to systems with C ≤ 170 b.u.
+
 ![Basic Erlang-b Formula](images/erlang-b.png)
 
-Recursive Erlang-B formula.
+#Recursive Erlang-B formula.
+
 ![Basic Erlang-b Formula](images/recurrent-erlang.png)
 
 ## Installation
@@ -17,7 +19,7 @@ Recursive Erlang-B formula.
 Please note: you need Node v20
 
 ## Running the formulas
-To run this project, type npm run erlang. When prompted, type `B` for the Basic Erlang-B formula or `R` for the Recurrent Erlang-B formula.
+To run this project, type `npm run erlang`. When prompted, type `B` for the Basic Erlang-B formula or `R` for the Recurrent Erlang-B formula.
 
 
 ## Erlang-B formula
