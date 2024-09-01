@@ -1,9 +1,29 @@
-import { basicErlang } from "./erlang";
+import { basicErlang } from './erlang';
+import { recurrentErlangformula } from './recurrent-erlang';
 import * as readline from 'readline';
+
+const calculatePerformance = (
+  capacity: number,
+  trafficLoad: number,
+  formula: string
+): void => {
+  const startTime = performance.now();
+  const formulaFunctions: { [key: string]: (capacity: number, trafficLoad: number) => number } = {
+    R: recurrentErlangformula,
+    B: basicErlang,
+  };
+
+  const computeFormula = formulaFunctions[formula] || formulaFunctions.basicErlang;
+  const result = computeFormula(capacity, trafficLoad);
+
+  console.log(`Erlang value: ${result}`);
+  console.log(`Time taken to execute Erlang-B formula: ${performance.now() - startTime} milliseconds`);
+};
+
 
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout,
+  output: process.stdout
 });
 
 rl.question('Enter the capacity: ', (capacityInput) => {
@@ -11,12 +31,15 @@ rl.question('Enter the capacity: ', (capacityInput) => {
 
   rl.question('Enter the traffic load: ', (trafficLoadInput) => {
     const trafficLoad = parseInt(trafficLoadInput);
+    rl.question(
+      'Which Erlang formula do you want to use? (basicErlang [Insert B] or recurrentErlang [Insert R]): ',
+      (erlangFormula) => {
+        const formula = erlangFormula.toUpperCase();
+        calculatePerformance(capacity, trafficLoad, formula);
 
-    const result = basicErlang(capacity, trafficLoad);
-    console.log(`Erlang value: ${result}`);
-
-    rl.close();
+        rl.close();
+      }
+    );
   });
 });
 
-// console.log(basicErlang(3, 2)); // 0.21052erl

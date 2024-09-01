@@ -18,11 +18,8 @@ const possibleStatesOfSystemSummation = (load: number, capacity: number): number
 };
 
 export const basicErlang = (capacity: number, trafficLoad: number): number => {
- const  startTime = performance.now()
- const carriedTrafficLoad = calculateProbabilityOfCalls(trafficLoad, capacity) / possibleStatesOfSystemSummation(trafficLoad, capacity)
-  const endTime = performance.now()
-  console.log(`Time taken to execute Erlang-B formula: ${endTime - startTime} in milliseconds`)
-  return carriedTrafficLoad;
+  return (
+    calculateProbabilityOfCalls(trafficLoad, capacity) /
+    possibleStatesOfSystemSummation(trafficLoad, capacity)
+  );
 };
-
-
