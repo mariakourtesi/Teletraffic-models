@@ -5,11 +5,11 @@ This project includes implementations of both the basic and recursive versions o
 
 ### Basic Erlang-B formula. This is restricted to systems with C ≤ 170 b.u.
 
-![Basic Erlang-b Formula](images/erlang-b.png)
+![Basic Erlang-b Formula](../images/erlang-b.png)
 
 ### Recursive Erlang-B formula.
 
-![Basic Erlang-b Formula](images/recurrent-erlang.png)
+![Basic Erlang-b Formula](../images/recurrent-erlang.png)
 
 ## Installation
 1. Clone the repository: `git clone https://https://github.com/mariakourtesi/Teletraffic-models.git`
