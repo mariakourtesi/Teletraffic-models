@@ -25,5 +25,5 @@ To run this project, type `npm run kaufman`.
 
 ## Kaufman-Roberts formula
 The Kaufman-Roberts formula is a multi-dimensional Erlang method that calculates the blocking probability when multiple services share a common resource pool. It's used to evaluate the blocking probability in a multirate system with circuit traffic.
- 
- ![Kaufman-Roberts based functions](https://www.ibm.com/docs/en/tnpm/1.4.4?topic=functions-kaufman-roberts-based)
+
+ <a href="[https://readme.com/](https://www.ibm.com/docs/en/tnpm/1.4.4?topic=functions-kaufman-roberts-based)" target="_blank">Kaufman-Roberts based functions</a>
