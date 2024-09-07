@@ -3,11 +3,15 @@
 ## Description
 This project includes implementations of Kaufman-Roberts mathematical formula.
 
-### BasicKaufman-Robertsrecursive formula.
+### Kaufman-Roberts recursive unnormalised formula.
 
 ![Kaufman-Roberts Formula](../images/kaufman.png)
 
-### Recursive Kaufman-Roberts formula.
+
+### Kaufman-Roberts recursive normalised formula.
+
+![Kaufman-Roberts Formula](../images/normalised.png)
+
 
 ## Installation
 1. Clone the repository: `git clone https://https://github.com/mariakourtesi/Teletraffic-models.git`
