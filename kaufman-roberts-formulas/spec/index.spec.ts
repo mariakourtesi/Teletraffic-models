@@ -1,4 +1,8 @@
-import { normaliseProbabilityValues, unnormalisedKaufmanRobertsFormula } from '../src/index';
+import {
+  kaufmanRoberts,
+  normaliseProbabilityValues,
+  unnormalisedKaufmanRobertsFormula
+} from '../src/index';
 
 describe('Kaufman Roberts Formulas', () => {
   describe.each([
@@ -98,6 +102,45 @@ describe('Normalise Probability Values', () => {
       }
 
       expect(sumOfProbablilities).toEqual(1);
+    });
+  });
+});
+
+describe('Kaufman Roberts normalised formula', () => {
+  describe.each([
+    {
+      description: 'no service classes provided',
+      capacity: 4,
+      serviceClasses: [],
+      expectedValue: {}
+    },
+    {
+      description: '2 different service classes provided',
+      capacity: 4,
+      serviceClasses: [
+        {
+          serviceClass: 1,
+          bu: 1,
+          incomingLoad_a: 2
+        },
+        {
+          serviceClass: 2,
+          bu: 2,
+          incomingLoad_a: 1
+        }
+      ],
+      expectedValue: {
+        'q(0)': 0.08,
+        'q(1)': 0.16,
+        'q(2)': 0.24,
+        'q(3)': 0.267,
+        'q(4)': 0.253
+      }
+    }
+  ])(`When $description`, ({ capacity, serviceClasses, expectedValue }) => {
+    it(`should return expected normalised probabilities`, () => {
+      const result = kaufmanRoberts(capacity, serviceClasses);
+      expect(result).toEqual(expectedValue);
     });
   });
 });
