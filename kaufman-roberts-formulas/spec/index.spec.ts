@@ -178,7 +178,7 @@ describe('Kaufman Roberts normalised formula', () => {
     },
     {
       description:
-        '3 different service classes provided and the 3rd service class has no incoming load',
+        '3 different service classes provided and the 3rd service class has no incoming traffic load',
       capacity: 3,
       serviceClasses: [
         {
@@ -206,7 +206,7 @@ describe('Kaufman Roberts normalised formula', () => {
     },
     {
       description:
-        '2 different service classes provided, the second one has a higher incoming load',
+        '2 different service classes provided, the second one has a higher bu than the system capacity',
       capacity: 1,
       serviceClasses: [
         {
@@ -223,6 +223,21 @@ describe('Kaufman Roberts normalised formula', () => {
       expectedValue: {
         'q(0)': 0.333,
         'q(1)': 0.667
+      }
+    },
+    {
+      description: '1 service class, that has a higher bu than the system capacity',
+      capacity: 1,
+      serviceClasses: [
+        {
+          serviceClass: 1,
+          bu: 5,
+          incomingLoad_a: 3
+        }
+      ],
+      expectedValue: {
+        'q(0)': 1,
+        'q(1)': 0
       }
     }
   ])(`When $description`, ({ capacity, serviceClasses, expectedValue }) => {
