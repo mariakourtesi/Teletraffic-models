@@ -45,20 +45,21 @@ Service Class 2:
 To verify that this implementation works, follow these steps:
 Navigate to Teletraffic Models https://teletraffic-models.appspot.com/ 
 
+
 Select the `Kaufman - Roberts Formula option`.
 
-Set the following parameters:
-Link Capacity (C): 4
-Number of Service Classes: 2
+- Set the following parameters:
+  - Link Capacity (C): 4
+  - Number of Service Classes: 2
 
 Configure the service classes:
 
-Service Class 1:
-  Traffic Load (a): 2
-  Bandwidth Demand: 1
-Service Class 2:
-  Traffic Load (a): 1
-  Bandwidth Demand: 2
+- Service Class 1:
+   - Traffic Load (a): 2
+   - Bandwidth Demand: 1
+- Service Class 2:
+   - Traffic Load (a): 1
+   - Bandwidth Demand: 2
 
 The expected output is:
 
