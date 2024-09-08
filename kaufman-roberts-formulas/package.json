@@ -8,7 +8,7 @@
     "build": "npx tsc",
     "test": "jest",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "fix-all": "eslint . --fix",
     "format": "prettier --write ./**/*.{js,jsx,ts,md,json} --config ./.prettierrc.json"
   },
   "author": "Maria Kourtesi",

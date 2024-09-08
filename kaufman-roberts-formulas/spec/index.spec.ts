@@ -136,6 +136,94 @@ describe('Kaufman Roberts normalised formula', () => {
         'q(3)': 0.267,
         'q(4)': 0.253
       }
+    },
+    {
+      description: '4 different service classes provided with system total capacity of 10bu',
+      capacity: 10,
+      serviceClasses: [
+        {
+          serviceClass: 1,
+          bu: 4,
+          incomingLoad_a: 1
+        },
+        {
+          serviceClass: 2,
+          bu: 3,
+          incomingLoad_a: 2
+        },
+        {
+          serviceClass: 3,
+          bu: 2,
+          incomingLoad_a: 3
+        },
+        {
+          serviceClass: 4,
+          bu: 1,
+          incomingLoad_a: 4
+        }
+      ],
+      expectedValue: {
+        'q(0)': 0.001,
+        'q(1)': 0.002,
+        'q(2)': 0.006,
+        'q(3)': 0.014,
+        'q(4)': 0.028,
+        'q(5)': 0.049,
+        'q(6)': 0.08,
+        'q(7)': 0.12,
+        'q(8)': 0.171,
+        'q(9)': 0.231,
+        'q(10)': 0.298
+      }
+    },
+    {
+      description:
+        '3 different service classes provided and the 3rd service class has no incoming load',
+      capacity: 3,
+      serviceClasses: [
+        {
+          serviceClass: 1,
+          bu: 1,
+          incomingLoad_a: 2
+        },
+        {
+          serviceClass: 2,
+          bu: 2,
+          incomingLoad_a: 1
+        },
+        {
+          serviceClass: 3,
+          bu: 2,
+          incomingLoad_a: 0
+        }
+      ],
+      expectedValue: {
+        'q(0)': 0.107,
+        'q(1)': 0.214,
+        'q(2)': 0.321,
+        'q(3)': 0.357
+      }
+    },
+    {
+      description:
+        '2 different service classes provided, the second one has a higher incoming load',
+      capacity: 1,
+      serviceClasses: [
+        {
+          serviceClass: 1,
+          bu: 1,
+          incomingLoad_a: 2
+        },
+        {
+          serviceClass: 2,
+          bu: 5,
+          incomingLoad_a: 3
+        }
+      ],
+      expectedValue: {
+        'q(0)': 0.333,
+        'q(1)': 0.667
+      }
     }
   ])(`When $description`, ({ capacity, serviceClasses, expectedValue }) => {
     it(`should return expected normalised probabilities`, () => {
