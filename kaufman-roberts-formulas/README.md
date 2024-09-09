@@ -28,19 +28,6 @@ The Kaufman-Roberts formula is a multi-dimensional Erlang method that calculates
 
  <a href="[https://readme.com/](https://www.ibm.com/docs/en/tnpm/1.4.4?topic=functions-kaufman-roberts-based)" target="_blank">Kaufman-Roberts based functions<a>
 
-To validate this implementation works, please navigate to 
-Select Kaufman - Roberts Formula
-Link Capacity C = 4
-Number of Service Classes = 2
-Service Class 1:
-  Traffic load (a) = 2
-  Bandwidth demand = 1
-
-Service Class 2:
-  Traffic load (a) = 1
-  Bandwidth demand = 2
-
-
 ## Validation Instructions
 To verify that this implementation works, follow these steps:
 Navigate to Teletraffic Models https://teletraffic-models.appspot.com/ 
