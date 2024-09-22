@@ -2,7 +2,7 @@ import {
   kaufmanRoberts,
   normaliseProbabilityValues,
   unnormalisedKaufmanRobertsFormula
-} from '../src/index';
+} from '../../src/commands/kaufman-roberts-formula';
 
 describe('Kaufman Roberts Formulas', () => {
   describe.each([

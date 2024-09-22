@@ -2,7 +2,9 @@
   "name": "kaufman-roberts-formulas",
   "version": "1.0.0",
   "description": "Implementation of Kaufman-Roberts mathematical models",
-  "main": "index.js",
+  "bin": {
+    "emlm": "./dist/index.js"
+  },
   "scripts": {
     "erlang": "ts-node src/index.ts",
     "build": "npx tsc",
@@ -14,6 +16,7 @@
   "author": "Maria Kourtesi",
   "devDependencies": {
     "@eslint/js": "^9.9.1",
+    "@types/figlet": "^1.5.8",
     "@types/jest": "^29.5.12",
     "eslint": "^9.9.1",
     "globals": "^15.9.0",
@@ -23,5 +26,9 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.3.0"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "figlet": "^1.7.0"
   }
 }

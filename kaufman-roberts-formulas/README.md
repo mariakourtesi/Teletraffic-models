@@ -21,7 +21,11 @@ This project includes implementations of Kaufman-Roberts mathematical formula.
 Please note: you need Node v20
 
 ## Running the formulas
-To run this project, type `npm run kaufman`. 
+1. Build the app: `npm run build`
+2. Install it locally: `npm install -g .`
+3. Run the command: 
+example
+`emlm kaufman-roberts --capacity 5 --serviceClasses '[{"serviceClass": 1, "bu": 1, "incomingLoad_a": 2}, {"serviceClass": 2, "bu": 2, "incomingLoad_a": 1}]'`
 
 ## Kaufman-Roberts formula
 The Kaufman-Roberts formula is a multi-dimensional Erlang method that calculates the blocking probability when multiple services share a common resource pool. It's used to evaluate the blocking probability in a multirate system with circuit traffic.
@@ -59,3 +63,16 @@ The output is:
 |   3  | 3.3333  |       0.26667          |
 |   4  | 3.1667  |       0.25333          |
 
+
+
+
+
+
+
+//bash
+// emlm kaufman-roberts --capacity 5 --serviceClasses "$(cat src/serviceClasses.json)"
+//or
+//emlm kaufman-roberts --capacity 5 --serviceClasses '[{"serviceClass": 1, "bu": 1, "incomingLoad_a": 2}, {"serviceClass": 2, "bu": 2, "incomingLoad_a": 1}]'
+
+//cmp
+//emlm kaufman-roberts --capacity 5 --serviceClasses "[{\"serviceClass\": 1, \"bu\": 1, \"incomingLoad_a\": 2}, {\"serviceClass\": 2, \"bu\": 2, \"incomingLoad_a\": 1}]"
