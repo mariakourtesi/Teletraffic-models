@@ -23,9 +23,19 @@ Please note: you need Node v20
 ## Running the formulas
 1. Build the app: `npm run build`
 2. Install it locally: `npm install -g .`
-3. Run the command: 
-example
-`emlm kaufman-roberts --capacity 5 --serviceClasses '[{"serviceClass": 1, "bu": 1, "incomingLoad_a": 2}, {"serviceClass": 2, "bu": 2, "incomingLoad_a": 1}]'`
+3. Run the command: `emlm kaufman-roberts -c 5 -s`
+
+You can run the command in either of the following ways:
+
+**In Bash**:
+You can create a json file and add the array of service classes there.
+```emlm kaufman-roberts --capacity 5 --serviceClasses "$(cat src/serviceClasses.json)"```
+
+Or, by directly providing the JSON string:
+```emlm kaufman-roberts --capacity 5 --serviceClasses '[{"serviceClass": 1, "bu": 1, "incomingLoad_a": 2}, {"serviceClass": 2, "bu": 2, "incomingLoad_a": 1}]'```
+
+**In Command Prompt** (for windows users):
+```emlm kaufman-roberts --capacity 5 --serviceClasses '[{"serviceClass": 1, "bu": 1, "incomingLoad_a": 2}, {"serviceClass": 2, "bu": 2, "incomingLoad_a": 1}]'```
 
 ## Kaufman-Roberts formula
 The Kaufman-Roberts formula is a multi-dimensional Erlang method that calculates the blocking probability when multiple services share a common resource pool. It's used to evaluate the blocking probability in a multirate system with circuit traffic.
@@ -64,15 +74,3 @@ The output is:
 |   4  | 3.1667  |       0.25333          |
 
 
-
-
-
-
-
-//bash
-// emlm kaufman-roberts --capacity 5 --serviceClasses "$(cat src/serviceClasses.json)"
-//or
-//emlm kaufman-roberts --capacity 5 --serviceClasses '[{"serviceClass": 1, "bu": 1, "incomingLoad_a": 2}, {"serviceClass": 2, "bu": 2, "incomingLoad_a": 1}]'
-
-//cmp
-//emlm kaufman-roberts --capacity 5 --serviceClasses "[{\"serviceClass\": 1, \"bu\": 1, \"incomingLoad_a\": 2}, {\"serviceClass\": 2, \"bu\": 2, \"incomingLoad_a\": 1}]"
