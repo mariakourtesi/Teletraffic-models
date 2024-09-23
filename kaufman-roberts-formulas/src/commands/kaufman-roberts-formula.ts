@@ -1,5 +1,5 @@
-import { Command } from 'commander';
 import { ServiceClass } from '../types';
+import { numberOfDigitsAfterDecimal } from '../utils';
 
 export const unnormalisedKaufmanRobertsFormula = (
   capacity: number,
@@ -25,7 +25,7 @@ export const unnormalisedKaufmanRobertsFormula = (
 
     const result = (1 / j) * sum;
 
-    results[j] = parseFloat(result.toFixed(3));
+    results[j] = parseFloat(result.toFixed(numberOfDigitsAfterDecimal));
 
     return result;
   };
@@ -41,7 +41,9 @@ export const normaliseProbabilityValues = (probabilities: number[]): number[] =>
   if (probabilities.length === 0) return [];
   const sum = probabilities.reduce((acc, curr) => acc + curr, 0);
 
-  return probabilities.map((probability) => parseFloat((probability / sum).toFixed(3)));
+  return probabilities.map((probability) =>
+    parseFloat((probability / sum).toFixed(numberOfDigitsAfterDecimal))
+  );
 };
 
 export const kaufmanRoberts = (capacity: number, serviceClasses: ServiceClass[]) => {

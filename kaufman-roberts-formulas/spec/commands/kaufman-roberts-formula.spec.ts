@@ -61,7 +61,7 @@ describe('Kaufman Roberts Formulas', () => {
           incomingLoad_a: 1
         }
       ],
-      expectedUnormalisedValue: [1, 2, 3, 3.333, 3.167]
+      expectedUnormalisedValue: [1, 2, 3, 3.3333333, 3.1666667]
     }
   ])(`When $description`, ({ capacity, serviceClasses, expectedUnormalisedValue }) => {
     it(`should return ${expectedUnormalisedValue}`, () => {
@@ -81,7 +81,7 @@ describe('Normalise Probability Values', () => {
     {
       description: '2 different probabilities provided',
       probabilities: [1, 2],
-      expectedNormalisedValue: [0.333, 0.667]
+      expectedNormalisedValue: [0.3333333, 0.6666667]
     }
   ])(`When $description`, ({ probabilities, expectedNormalisedValue }) => {
     let result: number[];
@@ -133,8 +133,8 @@ describe('Kaufman Roberts normalised formula', () => {
         'q(0)': 0.08,
         'q(1)': 0.16,
         'q(2)': 0.24,
-        'q(3)': 0.267,
-        'q(4)': 0.253
+        'q(3)': 0.2666667,
+        'q(4)': 0.2533333
       }
     },
     {
@@ -163,17 +163,17 @@ describe('Kaufman Roberts normalised formula', () => {
         }
       ],
       expectedValue: {
-        'q(0)': 0.001,
-        'q(1)': 0.002,
-        'q(2)': 0.006,
-        'q(3)': 0.014,
-        'q(4)': 0.028,
-        'q(5)': 0.049,
-        'q(6)': 0.08,
-        'q(7)': 0.12,
-        'q(8)': 0.171,
-        'q(9)': 0.231,
-        'q(10)': 0.298
+        'q(0)': 0.0005825,
+        'q(1)': 0.0023301,
+        'q(2)': 0.0064077,
+        'q(3)': 0.0143689,
+        'q(4)': 0.0280581,
+        'q(5)': 0.0492425,
+        'q(6)': 0.0795272,
+        'q(7)': 0.1199126,
+        'q(8)': 0.1705627,
+        'q(9)': 0.2306511,
+        'q(10)': 0.2983565
       }
     },
     {
@@ -198,10 +198,10 @@ describe('Kaufman Roberts normalised formula', () => {
         }
       ],
       expectedValue: {
-        'q(0)': 0.107,
-        'q(1)': 0.214,
-        'q(2)': 0.321,
-        'q(3)': 0.357
+        'q(0)': 0.1071429,
+        'q(1)': 0.2142857,
+        'q(2)': 0.3214286,
+        'q(3)': 0.3571429
       }
     },
     {
@@ -221,8 +221,8 @@ describe('Kaufman Roberts normalised formula', () => {
         }
       ],
       expectedValue: {
-        'q(0)': 0.333,
-        'q(1)': 0.667
+        'q(0)': 0.3333333,
+        'q(1)': 0.6666667
       }
     },
     {
