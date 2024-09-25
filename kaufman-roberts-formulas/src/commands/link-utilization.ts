@@ -20,3 +20,24 @@ export const trunkEficiency_n = (capacity: number, serviceClasses: ServiceClass[
   const utilization_G = calculateLinkUtilization(capacity, serviceClasses);
   return `${((utilization_G / capacity) * 100).toFixed(numberOfDigitsAfterDecimal)}%`;
 };
+
+export const meanNumberOfCallsInSystemInState_J = (
+  capacity: number,
+  serviceClasses: ServiceClass[],
+  state_j: number
+) => {
+  const probabilities = kaufmanRoberts(capacity, serviceClasses);
+
+  const meanNumberOfCalls: { [key: string]: number } = {};
+
+  serviceClasses.forEach((serviceClass) => {
+    const { bu, incomingLoad_a } = serviceClass;
+    const y_j =
+      incomingLoad_a * (probabilities[`q(${state_j - bu})`] / probabilities[`q(${state_j})`]);
+    return (meanNumberOfCalls[`y_${serviceClass.serviceClass}(${state_j})`] = parseFloat(
+      y_j.toFixed(2)
+    ));
+  });
+
+  return meanNumberOfCalls;
+};
