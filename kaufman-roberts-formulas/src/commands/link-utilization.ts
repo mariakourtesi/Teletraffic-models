@@ -30,14 +30,46 @@ export const meanNumberOfCallsInSystemInState_J = (
 
   const meanNumberOfCalls: { [key: string]: number } = {};
 
-  serviceClasses.forEach((serviceClass) => {
+  for (const serviceClass of serviceClasses) {
     const { bu, incomingLoad_a } = serviceClass;
-    const y_j =
-      incomingLoad_a * (probabilities[`q(${state_j - bu})`] / probabilities[`q(${state_j})`]);
-    return (meanNumberOfCalls[`y_${serviceClass.serviceClass}(${state_j})`] = parseFloat(
-      y_j.toFixed(2)
-    ));
-  });
+
+    if (state_j < bu) {
+      // set y_k(j) = 0 as per the condition
+      meanNumberOfCalls[`y_${serviceClass.serviceClass}(${state_j})`] = 0;
+      continue;
+    }
+
+    const prob_j_minus_bu = probabilities[`q(${state_j - bu})`];
+    const prob_j = probabilities[`q(${state_j})`];
+
+    if (prob_j_minus_bu === undefined || prob_j === undefined || prob_j === 0) {
+      meanNumberOfCalls[`y_${serviceClass.serviceClass}(${state_j})`] = 0;
+      continue;
+    }
+
+    const y_j = incomingLoad_a * (prob_j_minus_bu / prob_j);
+
+    meanNumberOfCalls[`y_${serviceClass.serviceClass}(${state_j})`] = parseFloat(y_j.toFixed(2));
+  }
 
   return meanNumberOfCalls;
 };
+
+console.log(
+  meanNumberOfCallsInSystemInState_J(
+    5,
+    [
+      {
+        serviceClass: 1,
+        bu: 1,
+        incomingLoad_a: 1
+      },
+      {
+        serviceClass: 2,
+        bu: 2,
+        incomingLoad_a: 1
+      }
+    ],
+    5
+  )
+);

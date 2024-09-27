@@ -24,25 +24,54 @@ describe('link-utilization', () => {
 });
 
 describe('mean-number-of-calls-in-system-in-state-J', () => {
-  const state_j = 5;
   const capacity = 5;
-  const serviceClasses = [
+  describe.each([
     {
-      serviceClass: 1,
-      bu: 1,
-      incomingLoad_a: 1
+      description:
+        'when state_j > bu, calculate the mean number of in-service calls when the system is in state_j= 5, full',
+      state_j: 5,
+      serviceClasses: [
+        {
+          serviceClass: 1,
+          bu: 1,
+          incomingLoad_a: 1
+        },
+        {
+          serviceClass: 2,
+          bu: 2,
+          incomingLoad_a: 1
+        }
+      ],
+      expected: {
+        'y_1(5)': 1.54,
+        'y_2(5)': 1.73
+      }
     },
     {
-      serviceClass: 2,
-      bu: 2,
-      incomingLoad_a: 1
+      description:
+        'when state_j > bu, calculate the mean number of in-service calls when the system is in state_j= 1',
+      state_j: 1,
+      serviceClasses: [
+        {
+          serviceClass: 1,
+          bu: 1,
+          incomingLoad_a: 1
+        },
+        {
+          serviceClass: 2,
+          bu: 2,
+          incomingLoad_a: 1
+        }
+      ],
+      expected: {
+        'y_1(1)': 1,
+        'y_2(1)': 0
+      }
     }
-  ];
-  it('should calculate the mean number of calls in the system in specified state J', () => {
-    const result = meanNumberOfCallsInSystemInState_J(capacity, serviceClasses, 5);
-    expect(result).toEqual({
-      'y_1(5)': 1.54,
-      'y_2(5)': 1.73
+  ])('Given a state_J, $description', ({ expected, serviceClasses, state_j }) => {
+    it('should calculate the mean number of calls in the system in specified state J', () => {
+      const result = meanNumberOfCallsInSystemInState_J(capacity, serviceClasses, state_j);
+      expect(result).toEqual(expected);
     });
   });
 });
