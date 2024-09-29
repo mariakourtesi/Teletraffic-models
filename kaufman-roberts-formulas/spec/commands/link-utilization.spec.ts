@@ -1,5 +1,6 @@
 import {
   linkUtilization_U,
+  meanNumberOfCallsInSystem,
   meanNumberOfCallsInSystemInState_J
 } from '../../src/commands/link-utilization';
 describe('link-utilization', () => {
@@ -72,6 +73,30 @@ describe('mean-number-of-calls-in-system-in-state-J', () => {
     it('should calculate the mean number of calls in the system in specified state J', () => {
       const result = meanNumberOfCallsInSystemInState_J(capacity, serviceClasses, state_j);
       expect(result).toEqual(expected);
+    });
+  });
+});
+
+describe('mean-number-of-calls-in-system', () => {
+  const capacity = 5;
+  const serviceClasses = [
+    {
+      serviceClass: 1,
+      bu: 1,
+      incomingLoad_a: 1
+    },
+    {
+      serviceClass: 2,
+      bu: 2,
+      incomingLoad_a: 1
+    }
+  ];
+
+  it('should calculate the mean number of calls in the system', () => {
+    const result = meanNumberOfCallsInSystem(capacity, serviceClasses);
+    expect(result).toEqual({
+      n_1: 0.8949,
+      n_2: 0.7296
     });
   });
 });

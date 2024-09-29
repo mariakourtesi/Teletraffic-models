@@ -55,21 +55,25 @@ export const meanNumberOfCallsInSystemInState_J = (
   return meanNumberOfCalls;
 };
 
-console.log(
-  meanNumberOfCallsInSystemInState_J(
-    5,
-    [
-      {
-        serviceClass: 1,
-        bu: 1,
-        incomingLoad_a: 1
-      },
-      {
-        serviceClass: 2,
-        bu: 2,
-        incomingLoad_a: 1
-      }
-    ],
-    5
-  )
-);
+export const meanNumberOfCallsInSystem = (capacity: number, serviceClasses: ServiceClass[]) => {
+  const meanNumberOfCalls: { [key: string]: number } = {};
+  const probabilities = kaufmanRoberts(capacity, serviceClasses);
+
+  for (const serviceClass of serviceClasses) {
+    meanNumberOfCalls[`n_${serviceClass.serviceClass}`] = 0;
+
+    for (let j = 1; j <= capacity; j++) {
+      const meanNumberOfCallsInEachState = meanNumberOfCallsInSystemInState_J(
+        capacity,
+        serviceClasses,
+        j
+      );
+
+      meanNumberOfCalls[`n_${serviceClass.serviceClass}`] +=
+        meanNumberOfCallsInEachState[`y_${serviceClass.serviceClass}(${j})`] *
+        parseFloat(probabilities[`q(${j})`].toFixed(2));
+    }
+  }
+
+  return meanNumberOfCalls;
+};

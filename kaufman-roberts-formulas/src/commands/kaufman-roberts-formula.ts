@@ -50,7 +50,6 @@ export const normaliseProbabilityValues = (probabilities: number[]): number[] =>
 };
 
 export const kaufmanRoberts = (capacity: number, serviceClasses: ServiceClass[]) => {
-  const startTime = performance.now();
   const probabilities = unnormalisedKaufmanRobertsFormula(capacity, serviceClasses);
 
   const result: { [key: string]: number } = {};
@@ -58,8 +57,6 @@ export const kaufmanRoberts = (capacity: number, serviceClasses: ServiceClass[])
   normaliseProbabilityValues(probabilities).forEach((prob, index) => {
     return (result[`q(${index})`] = prob);
   });
-
-  console.log(`Time taken to execute: ${performance.now() - startTime} milliseconds`);
 
   return result;
 };
