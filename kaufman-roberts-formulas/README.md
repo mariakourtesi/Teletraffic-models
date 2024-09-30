@@ -80,6 +80,7 @@ The output is:
 ## Roberts formula or Erlang Multirate Loss Model under the BR policy
 
 "By properly selecting the BR parameters tk, we can achieve CBP equalization among service-classes; this is the main target of the
-BR policy" extracted from the book  <a href="[https://readme.com/]https://www.wiley.com/en-us/Efficient+Multirate+Teletraffic+Loss+Models+Beyond+Erlang-p-9781119426882)" target="_blank">Efficient Multirate Teletraffic Loss Models Beyond Erlang<a>
+BR policy" extracted from the book  
+<a href="https://www.wiley.com/en-us/Efficient+Multirate+Teletraffic+Loss+Models+Beyond+Erlang-p-9781119426882" target="_blank">Efficient Multirate Teletraffic Loss Models Beyond Erlang</a>
 
 
