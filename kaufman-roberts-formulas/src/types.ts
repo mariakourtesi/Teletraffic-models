@@ -3,3 +3,7 @@ export interface ServiceClass {
   bu: number;
   incomingLoad_a: number;
 }
+
+export interface ServiceClassWithBR extends ServiceClass {
+  tk: number; // reserved bandwidth
+}

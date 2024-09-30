@@ -12,6 +12,9 @@ This project includes implementations of Kaufman-Roberts mathematical formula.
 
 ![Kaufman-Roberts Formula](../images/normalised.png)
 
+## Roberts formula or Erlang Multirate Loss Model under the Bandwidth Reservation policy
+
+![Roberts Formula](../images/roberts-formula.png)
 
 ## Installation
 1. Clone the repository: `git clone https://https://github.com/mariakourtesi/Teletraffic-models.git`
@@ -72,5 +75,11 @@ The output is:
 |   2  |    3    |       0.24             |
 |   3  | 3.3333  |       0.26667          |
 |   4  | 3.1667  |       0.25333          |
+
+
+## Roberts formula or Erlang Multirate Loss Model under the BR policy
+
+"By properly selecting the BR parameters tk, we can achieve CBP equalization among service-classes; this is the main target of the
+BR policy" extracted from the book  <a href="[https://readme.com/]https://www.wiley.com/en-us/Efficient+Multirate+Teletraffic+Loss+Models+Beyond+Erlang-p-9781119426882)" target="_blank">Efficient Multirate Teletraffic Loss Models Beyond Erlang<a>
 
 
