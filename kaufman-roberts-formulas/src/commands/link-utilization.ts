@@ -1,4 +1,4 @@
-import { ServiceClass } from '../types';
+import { ServiceClass, ServiceClassWithBR } from '../types';
 import { numberOfDigitsAfterDecimal } from '../utils';
 import { kaufmanRoberts } from './kaufman-roberts-formula';
 
@@ -25,7 +25,7 @@ export const meanNumberOfCallsInSystemInState_J = (
   capacity: number,
   serviceClasses: ServiceClass[],
   state_j: number
-) => {
+): { [key: string]: number } => {
   const probabilities = kaufmanRoberts(capacity, serviceClasses);
 
   const meanNumberOfCalls: { [key: string]: number } = {};
@@ -55,19 +55,28 @@ export const meanNumberOfCallsInSystemInState_J = (
   return meanNumberOfCalls;
 };
 
-export const meanNumberOfCallsInSystem = (capacity: number, serviceClasses: ServiceClass[]) => {
+export const meanNumberOfCallsInSystem = (
+  capacity: number,
+  serviceClasses: ServiceClass[] | ServiceClassWithBR[]
+) => {
   const meanNumberOfCalls: { [key: string]: number } = {};
   const probabilities = kaufmanRoberts(capacity, serviceClasses);
 
   for (const serviceClass of serviceClasses) {
     meanNumberOfCalls[`n_${serviceClass.serviceClass}`] = 0;
+    const { tk } = serviceClass as ServiceClassWithBR;
+    let meanNumberOfCallsInEachState: { [key: string]: number } = {};
 
     for (let j = 1; j <= capacity; j++) {
-      const meanNumberOfCallsInEachState = meanNumberOfCallsInSystemInState_J(
-        capacity,
-        serviceClasses,
-        j
-      );
+      if (j > capacity - tk) {
+        meanNumberOfCallsInEachState[`y_${serviceClass.serviceClass}(${j})`] = 0;
+      } else {
+        meanNumberOfCallsInEachState = meanNumberOfCallsInSystemInState_J(
+          capacity,
+          serviceClasses,
+          j
+        );
+      }
 
       meanNumberOfCalls[`n_${serviceClass.serviceClass}`] +=
         meanNumberOfCallsInEachState[`y_${serviceClass.serviceClass}(${j})`] *
