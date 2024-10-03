@@ -1,7 +1,9 @@
 # Kaufman-Roberts
 
 ## Description
-This project includes implementations of Kaufman-Roberts mathematical formula.
+This project implements various mathematical models related to network optimization and performance analysis, specifically focusing on the Kaufman-Roberts, Roberts, and Dziong-Roberts formulas under complete sharing and bandwidth reservation policies.
+
+These formulas are widely used in telecommunications and network engineering to address challenges such as traffic management, resource allocation, and network dimensioning.
 
 ### Kaufman-Roberts recursive unnormalised formula.
 
