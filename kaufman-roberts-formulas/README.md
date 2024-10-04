@@ -16,6 +16,11 @@ This project includes implementations of Kaufman-Roberts mathematical formula.
 
 ![Roberts Formula](../images/roberts-formula.png)
 
+## Dziong-Roberts recursive formula
+Calculates the state probabilities in multiservice networks.
+
+![Dziong-Roberts Formula](../images/dziong-roberts.png)
+
 ## Installation
 1. Clone the repository: `git clone https://https://github.com/mariakourtesi/Teletraffic-models.git`
 2. Navigate to the project directory: `cd kaufman-roberts-formulas`
