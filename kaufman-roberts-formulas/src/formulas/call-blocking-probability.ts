@@ -1,11 +1,24 @@
 import { ServiceClass, ServiceClassWithBR } from '../types';
 import { kaufmanRoberts } from './kaufman-roberts-formula';
+import { robertsFormulaBRPolicy } from './roberts-formula-br-policy';
+
+function isServiceClassWithBR(obj: ServiceClass | ServiceClassWithBR): obj is ServiceClassWithBR {
+  return (obj as ServiceClassWithBR).tk !== undefined;
+}
 
 export const callBlockingProbability = (
   capacity: number,
   serviceClasses: ServiceClass[] | ServiceClassWithBR[]
 ) => {
-  const probabilityValues = kaufmanRoberts(capacity, serviceClasses);
+  let probabilityValues;
+  const BRpolicy = isServiceClassWithBR(serviceClasses[0]);
+
+  if (!BRpolicy) {
+    probabilityValues = kaufmanRoberts(capacity, serviceClasses);
+  }
+
+  probabilityValues = robertsFormulaBRPolicy(capacity, serviceClasses as ServiceClassWithBR[]);
+
   const result: { [key: string]: string } = {};
 
   serviceClasses.forEach((serviceClass, index) => {
