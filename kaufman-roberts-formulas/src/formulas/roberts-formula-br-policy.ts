@@ -2,7 +2,7 @@ import { ServiceClassWithBR } from '../types';
 import { numberOfDigitsAfterDecimal } from '../utils';
 import { normaliseProbabilityValues } from '../utils';
 
-const blockingProbablityBR_q = (
+const stateProbablityWithBR_q = (
   j: number,
   serviceClasses: ServiceClassWithBR[],
   capacity: number
@@ -26,7 +26,7 @@ const blockingProbablityBR_q = (
       continue;
     }
 
-    sum += incomingLoad_a * bu * blockingProbablityBR_q(j - bu, serviceClasses, capacity);
+    sum += incomingLoad_a * bu * stateProbablityWithBR_q(j - bu, serviceClasses, capacity);
   }
 
   const result = (1 / j) * sum;
@@ -35,6 +35,8 @@ const blockingProbablityBR_q = (
 
   return result;
 };
+
+console.log(stateProbablityWithBR_q(3, [{ serviceClass: 1, bu: 1, incomingLoad_a: 2, tk: 1 }, {serviceClass: 2, bu:2, incomingLoad_a:1, tk:0}], 4));
 
 export const robertsFormulaBRPolicy = (capacity: number, serviceClasses: ServiceClassWithBR[]) => {
   if (serviceClasses.length === 0) return {};
@@ -45,7 +47,7 @@ export const robertsFormulaBRPolicy = (capacity: number, serviceClasses: Service
 
   for (let j = 0; j <= capacity; j++) {
     results[j] = parseFloat(
-      blockingProbablityBR_q(j, serviceClasses, capacity).toFixed(numberOfDigitsAfterDecimal)
+      stateProbablityWithBR_q(j, serviceClasses, capacity).toFixed(numberOfDigitsAfterDecimal)
     );
   }
   normaliseProbabilityValues(results).forEach((prob: number, index: number) => {

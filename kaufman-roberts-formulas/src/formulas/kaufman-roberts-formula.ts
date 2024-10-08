@@ -1,7 +1,7 @@
 import { ServiceClass } from '../types';
 import { normaliseProbabilityValues, numberOfDigitsAfterDecimal } from '../utils';
 
-const blockingProbablity_q = (j: number, serviceClasses: ServiceClass[]): number => {
+const stateProbability_q = (j: number, serviceClasses: ServiceClass[]): number => {
   const results: number[] = [];
   // Base case: q(0) = 1
   if (j === 0) {
@@ -13,7 +13,7 @@ const blockingProbablity_q = (j: number, serviceClasses: ServiceClass[]): number
   let sum = 0;
   for (const serviceClass of serviceClasses) {
     const { bu, incomingLoad_a } = serviceClass;
-    sum += incomingLoad_a * bu * blockingProbablity_q(j - bu, serviceClasses);
+    sum += incomingLoad_a * bu * stateProbability_q(j - bu, serviceClasses);
   }
 
   const result = (1 / j) * sum;
@@ -33,7 +33,7 @@ export const unnormalisedKaufmanRobertsFormula = (
 
   for (let j = 0; j <= capacity; j++) {
     results[j] = parseFloat(
-      blockingProbablity_q(j, serviceClasses).toFixed(numberOfDigitsAfterDecimal)
+      stateProbability_q(j, serviceClasses).toFixed(numberOfDigitsAfterDecimal)
     );
   }
 

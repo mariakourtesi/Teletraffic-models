@@ -1,4 +1,4 @@
-# Kaufman-Roberts
+# Erlang Multirate Loss Models
 
 ## Description
 This project implements various mathematical models related to network optimization and performance analysis, specifically focusing on the Kaufman-Roberts, Roberts, and Dziong-Roberts formulas under complete sharing and bandwidth reservation policies.
