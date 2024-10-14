@@ -1,10 +1,7 @@
 import {dziongRobertsFormula} from '../../src/formulas/dziong-roberts-formula';
 
 describe('Erland Multirate Loss Model - Dziong-Roberts Formula more than 1 links', () => {
-  const linksCapacity = {
-    link1: 4,
-    link2: 5
-  };
+  const linksCapacity = [4, 5];
 
   const serviceClasses = [
     {
