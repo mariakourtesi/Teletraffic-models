@@ -39,11 +39,10 @@ const isValidLinkState = (
 export const stateProbabilityNetworkTopology = (
   topology: number[],
   serviceClasses: ServiceClass[],
-  newTopology: number[] = topology,
   stateProbabilities: { [key: string]: number } = {},
   validLinkStates: number[][]
 ): { [key: string]: number } => {
-  const topologyKey = `q(${newTopology.join(',')})`;
+  const topologyKey = `q(${topology.join(',')})`;
 
   // Check if this state has already been computed
   if (stateProbabilities[topologyKey] !== undefined) {
@@ -51,13 +50,13 @@ export const stateProbabilityNetworkTopology = (
   }
 
   // Base case: if all link capacities are zero, this is the final valid state
-  if (newTopology.every((link) => link === 0)) {
+  if (topology.every((link) => link === 0)) {
     stateProbabilities[topologyKey] = 1.0; // q(0,...,0) = 1
     return stateProbabilities;
   }
 
   // If any link has a negative capacity
-  if (newTopology.some((link) => link < 0)) {
+  if (topology.some((link) => link < 0)) {
     stateProbabilities[topologyKey] = 0;
     return stateProbabilities;
   }
@@ -65,30 +64,29 @@ export const stateProbabilityNetworkTopology = (
   let sum = 0;
 
   // Iterate over the topology, processing each link
-  for (let index = 0; index < newTopology.length; index++) {
+  for (let index = 0; index < topology.length; index++) {
     for (const serviceClass of serviceClasses) {
       const { lambda, mu, bandwidth } = serviceClass;
       const incomingLoad_a = lambda / mu;
-      const newTopologyLink = [...newTopology];
-      newTopologyLink[index] -= bandwidth;
+      const newTopology = [...topology];
+      newTopology[index] -= bandwidth;
 
       const isValidState = validLinkStates.some((validLinkState) =>
-        newTopologyLink.every((value, index) => value === validLinkState[index])
+        newTopology.every((value, index) => value === validLinkState[index])
       );
 
-      console.log('isValidState?', newTopologyLink, isValidState);
+      console.log('isValidState?', newTopology, isValidState);
 
       if (isValidState) {
-        const probabilityKey = `q(${newTopologyLink.join(',')})`;
+      
         const probability = stateProbabilityNetworkTopology(
-          newTopologyLink,
+          newTopology,
           serviceClasses,
-          topology,
           stateProbabilities,
           validLinkStates
         );
 
-        sum += incomingLoad_a * bandwidth * probability[probabilityKey];
+        sum += incomingLoad_a * bandwidth * probability[topologyKey];
       }
     }
   }
@@ -120,10 +118,11 @@ export const dziongRobertsFormula = (
   const stateProbabilities = stateProbabilityNetworkTopology(
     topology,
     serviceClasses,
-    topology,
     {},
     validLinkStates
   );
+
+
   return stateProbabilities;
 };
 
