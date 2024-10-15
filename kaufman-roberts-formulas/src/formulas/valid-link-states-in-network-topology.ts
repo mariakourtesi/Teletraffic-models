@@ -67,6 +67,34 @@ function isValidState(
   return true; // The state is valid if all link capacities are respected
 }
 
+
+const isValidLinkState = (
+  state: number[],
+  serviceClasses: ServiceClass[],
+  topology: number[]
+): boolean => {
+  const linkLoad = Array(topology.length).fill(0);
+
+  for (let i = 0; i < serviceClasses.length; i++) {
+    const calls = state[i];
+    const route = serviceClasses[i].route;
+    const bandwidth = serviceClasses[i].bandwidth;
+
+    for (let linkIndex = 0; linkIndex < route.length; linkIndex++) {
+      linkLoad[linkIndex] += calls * route[linkIndex] * bandwidth;
+    }
+  }
+
+  for (let linkIndex = 0; linkIndex < topology.length; linkIndex++) {
+    if (linkLoad[linkIndex] > topology[linkIndex]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+
 // // Test data
 
 const topology = [4, 5]; // Link capacities: Link 1 has 2 b.u., Link 2 has 3 b.u.

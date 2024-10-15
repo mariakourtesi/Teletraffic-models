@@ -3,38 +3,12 @@ import { numberOfDigitsAfterDecimal } from '../utils';
 import { calculateValidStates } from './valid-link-states-in-network-topology';
 
 interface ServiceClass {
-  serviceClass: number; // Service class ID
+  serviceClass: number;
   lambda: number; // Arrival rate (in Erlangs)
   mu: number; // Service rate
   bandwidth: number; // Required bandwidth units (b.u.) for each call
   route: number[]; // Route: how many b.u. are used on each link
 }
-
-const isValidLinkState = (
-  state: number[],
-  serviceClasses: ServiceClass[],
-  topology: number[]
-): boolean => {
-  const linkLoad = Array(topology.length).fill(0);
-
-  for (let i = 0; i < serviceClasses.length; i++) {
-    const calls = state[i];
-    const route = serviceClasses[i].route;
-    const bandwidth = serviceClasses[i].bandwidth;
-
-    for (let linkIndex = 0; linkIndex < route.length; linkIndex++) {
-      linkLoad[linkIndex] += calls * route[linkIndex] * bandwidth;
-    }
-  }
-
-  for (let linkIndex = 0; linkIndex < topology.length; linkIndex++) {
-    if (linkLoad[linkIndex] > topology[linkIndex]) {
-      return false;
-    }
-  }
-
-  return true;
-};
 
 export const stateProbabilityNetworkTopology = (
   topology: number[],
@@ -49,13 +23,13 @@ export const stateProbabilityNetworkTopology = (
     return stateProbabilities;
   }
 
-  // Base case: if all link capacities are zero, this is the final valid state
+  // Base case: if all link capacities are zero
   if (topology.every((link) => link === 0)) {
     stateProbabilities[topologyKey] = 1.0; // q(0,...,0) = 1
     return stateProbabilities;
   }
 
-  // If any link has a negative capacity
+  // If any link has a negative capacity, the state is invalid
   if (topology.some((link) => link < 0)) {
     stateProbabilities[topologyKey] = 0;
     return stateProbabilities;
@@ -63,37 +37,73 @@ export const stateProbabilityNetworkTopology = (
 
   let sum = 0;
 
-  // Iterate over the topology, processing each link
+  // Iterate over the links in the topology
   for (let index = 0; index < topology.length; index++) {
+    const jl = topology[index]; // Current link capacity
+
+    // Iterate over the service classes
     for (const serviceClass of serviceClasses) {
-      const { lambda, mu, bandwidth } = serviceClass;
+      const { lambda, mu, bandwidth, route } = serviceClass;
       const incomingLoad_a = lambda / mu;
+
+      if (route[index] === 0) continue; // Skip if the service class doesn't use this link
+
       const newTopology = [...topology];
       newTopology[index] -= bandwidth;
+    
+      if (newTopology[index] >= 0) {
 
-      const isValidState = validLinkStates.some((validLinkState) =>
-        newTopology.every((value, index) => value === validLinkState[index])
+      const recursedProbabilities = stateProbabilityNetworkTopology(
+        newTopology,
+        serviceClasses,
+        stateProbabilities,
+        validLinkStates
+      );
+      const recursedKey = `q(${newTopology.join(',')})`;
+
+
+  
+     
+        const recursedProbability = recursedProbabilities[recursedKey];
+
+        sum += incomingLoad_a * bandwidth * recursedProbability;
+
+
+  
+    }
+  }
+
+    if (jl > 0) {
+      const result = (1 / jl) * sum;
+      stateProbabilities[topologyKey] = parseFloat(result.toFixed(numberOfDigitsAfterDecimal));
+    }
+  }
+
+  return stateProbabilities;
+};
+
+const findValidKeys = (stateValues: { [key: string]: number }, validStates: number[][]): { [key: string]: number } => {
+  const validKeys: { [key: string]: number } = {};
+
+  for (const key in stateValues) {
+
+    const matches = key.match(/\d+/g);
+    if (matches) {
+      const arrayKey = matches.map(Number); 
+
+  
+      const existsInValidStates = validStates.some(validState => 
+        validState.length === arrayKey.length && validState.every((val, index) => val === arrayKey[index])
       );
 
-      console.log('isValidState?', newTopology, isValidState);
 
-      if (isValidState) {
-      
-        const probability = stateProbabilityNetworkTopology(
-          newTopology,
-          serviceClasses,
-          stateProbabilities,
-          validLinkStates
-        );
-
-        sum += incomingLoad_a * bandwidth * probability[topologyKey];
+      if (existsInValidStates) {
+        validKeys[key] = stateValues[key]; 
       }
     }
   }
-  const totalLinkCapacity = topology.reduce((a, b) => a + b, 0);
-  const result = (1 / totalLinkCapacity) * sum;
-  stateProbabilities[topologyKey] = parseFloat(result.toFixed(numberOfDigitsAfterDecimal));
-  return stateProbabilities;
+  
+  return validKeys; 
 };
 
 export const dziongRobertsFormula = (
@@ -122,8 +132,8 @@ export const dziongRobertsFormula = (
     validLinkStates
   );
 
-
-  return stateProbabilities;
+  const validStatesinLink = findValidKeys(stateProbabilities, validLinkStates)
+  return validStatesinLink;
 };
 
 const topology = [4, 5];
