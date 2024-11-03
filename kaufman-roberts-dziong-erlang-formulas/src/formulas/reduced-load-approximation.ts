@@ -56,8 +56,10 @@ console.log('previousResult================', previousResult);
          console.log('otherLink',otherLinks);
          if (Object.keys(previousResult).length === 0) {
           result[`V_link${otherLinks}_class_${serviceClass.serviceClass}`] = initialResult;
-        } else{
-          result[`V_link${otherLinks}_class_${serviceClass.serviceClass}`] = previousResult[`V_link${link_in_network.link}_class_${serviceClass.serviceClass}`];
+        } 
+        else{
+          result[`V_link${otherLinks}_class_${serviceClass.serviceClass}`] = previousResult[`V_link${otherLinks}_class_${serviceClass.serviceClass}`]
+          // previousResult[`V_link${link_in_network.link}_class_${serviceClass.serviceClass}`];
         }
 
         console.log('result should be 0', result[`V_link${otherLinks}_class_${serviceClass.serviceClass}`]);
@@ -66,7 +68,7 @@ console.log('previousResult================', previousResult);
 
           //result[`V_link${link_in_network.link}_class_${serviceClass.serviceClass}`] = (1 - result[`V_link${link}_class_${serviceClass.serviceClass}`])
 
-          productForm *= productForm;
+          // productForm *= productForm;
 
        
           incomingLoad_a = incomingLoad_a * productForm;
@@ -76,7 +78,7 @@ console.log('previousResult================', previousResult);
 
        const  neWSC = {
           ...serviceClass,
-          incomingLoad_a: incomingLoad_a * productForm
+          incomingLoad_a: incomingLoad_a 
         }
   
         newServiceClasses.push(neWSC);
@@ -98,11 +100,12 @@ console.log('previousResult================', previousResult);
     newServiceClasses.forEach((serviceClass) => {
       const bu = serviceClass.bu;
     // for (let j = capacity - bu + 1; j <= capacity; j++) {
-     let  j = capacity - bu + 1;
+      let j = capacity - bu + 1;
         const q_j = stateProbabilityValues[`q(${j})`] || 0;
         console.log('q_j',q_j)
         cbp += q_j;
-   //  }
+        console.log('cbp', cbp);
+  // }
 
       console.log(link_in_network.link, serviceClass.serviceClass, cbp);
       
@@ -154,7 +157,8 @@ const calculateCallBloackingProbabilitiesInRLA = (
   console.log('cbp', cbp);
   console.log('2ndIteration===================');
   cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
-
+  console.log('3rdIteration===================');
+  cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
   
   return cbp;
 };
