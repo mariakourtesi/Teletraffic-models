@@ -31,14 +31,20 @@ export const unnormalisedKaufmanRobertsFormula = (
 
   const results: number[] = [];
 
-  for (let j = 0; j <= capacity; j++) {
+  const calculateStateProbabilities = (j: number): void => {
+    if (j > capacity) return;
+
     results[j] = parseFloat(
       stateProbability_q(j, serviceClasses).toFixed(numberOfDigitsAfterDecimal)
     );
+
+    calculateStateProbabilities(j + 1);
+  };
+
+  calculateStateProbabilities(0);
+  return results;
   }
 
-  return results;
-};
 
 export const kaufmanRoberts = (capacity: number, serviceClasses: ServiceClass[]) => {
   const probabilities = unnormalisedKaufmanRobertsFormula(capacity, serviceClasses);
@@ -51,3 +57,6 @@ export const kaufmanRoberts = (capacity: number, serviceClasses: ServiceClass[])
 
   return result;
 };
+
+
+console.log(kaufmanRoberts(4, [ { serviceClass: 1, bu: 1, incomingLoad_a: 0}]));
