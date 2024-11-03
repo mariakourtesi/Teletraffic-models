@@ -41,7 +41,7 @@ export const blockingProbabilityNetworkTopology = (
               previousResult[`V_link${otherLinks}_class_${serviceClass.serviceClass}`];
           }
 
-          productForm = 1 - result[`V_link${otherLinks}_class_${serviceClass.serviceClass}`];
+          productForm *=( 1 - result[`V_link${otherLinks}_class_${serviceClass.serviceClass}`]);
           // productForm *= productForm;
 
           incomingLoad_a = incomingLoad_a * productForm;
@@ -79,8 +79,8 @@ export const blockingProbabilityNetworkTopology = (
 };
 
 const links = [
-  { link: 1, capacity: 4 },
-  { link: 2, capacity: 5 }
+  { link: 1, capacity: 2 },
+  { link: 2, capacity: 3 }
 ];
 
 const serviceClasses = [
@@ -98,7 +98,7 @@ const serviceClasses = [
   }
 ];
 
-const calculateCallBlockingProbabilitiesInRLA = (
+const calculateBlockingWithReducedTrafficLoad = (
   links: networkTopology[],
   serviceClasses: ServiceClassWithRoute[]
 ) => {
@@ -122,27 +122,27 @@ const calculateCallBlockingProbabilitiesInRLA = (
   return cbp;
 };
 
-console.log(calculateCallBlockingProbabilitiesInRLA(links, serviceClasses));
-
-export const blockingProbabilityinRLA = (links: networkTopology[], serviceClasses:  ServiceClassWithRoute[]) => {
-  const blockingProbabilities = calculateCallBlockingProbabilitiesInRLA(links, serviceClasses);
+export const callBlockingProbabilityinRLA = (
+  links: networkTopology[],
+  serviceClasses: ServiceClassWithRoute[]
+) => {
+  const blockingProbabilities = calculateBlockingWithReducedTrafficLoad(links, serviceClasses);
   let result: { [key: string]: number } = {};
 
   serviceClasses.forEach((serviceClass) => {
-    let cbp: number = 1; 
+    let cbp: number = 1;
     const { serviceClass: sc, route } = serviceClass;
 
     route.forEach((route) => {
       const linkBlockingProbability = blockingProbabilities[`V_link${route}_class_${sc}`] || 0;
-   
-      cbp *= (1 - linkBlockingProbability);
+
+      cbp *= 1 - linkBlockingProbability;
     });
 
     result[`B${sc}`] = Number((1 - cbp).toFixed(5));
   });
 
   return result;
-}
+};
 
-
-console.log(blockingProbabilityinRLA(links, serviceClasses));
+console.log(callBlockingProbabilityinRLA(links, serviceClasses));
