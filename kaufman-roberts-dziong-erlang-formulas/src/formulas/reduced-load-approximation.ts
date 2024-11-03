@@ -6,158 +6,117 @@
 import { networkTopology, ServiceClassWithRoute } from '../types';
 import { kaufmanRoberts } from './kaufman-roberts-formula';
 
-//************* STEP 1 *************//
-
-// Blocking of class 1 at link 1
-// B11 = [C1; ax, for each x that belongs to the service class 1] = kaufmanRoberts formula (j = C1-b1+1)
-
-// Blocking of class 1 at link 2
-// B21 = [C2; ax, for each x that belongs to the service class 1] = kaufmanRoberts formula (j = C2-b1+1)
-
-// Blocking of class 2 at link 2
-// B22 = [C2; ax, for each x that belongs to the service class 2] = kaufmanRoberts formula (j = C2-b2+1)
-
-//************* STEP 2 *************//
-// Calculate the reduced traffic load ax in each link
-
-// reduced traffic load  at link 1 class 1
-// i  belongs to the service class 1 traffic flow minus the current link l
-// x= 1, l = 1
-// axΠ(1-Vix) = a1Π(1-Vi1) = a1*Π(1-V21)
-
-// reduced traffic load at link 2 class 1
-// i  belongs to the service class 1 traffic flow minus the current link l (which is link =2)
-// x= 1, l = 2
-// axΠ(1-Vix) = a1Π(1-Vi1) = a1*Π(1-V11)
-
-// reduced traffic load at link 2 class 2
-// i  belongs to the service class 2 traffic flow minus the current link l (which is link =2)
-// x= 2, l = 2
-// axΠ(1-Vix) = a2Π(1-Vi2) = a2 (since there is no other link for class 2)
-
-//************* STEP 3 *************//
-// Calculate the CBP for each service class in each link
-
-// V11 = B11 = [C1, a1(1-V21)]
-
-// V21 = B21 = [C2, a1(1-V11), a2]
-
-// V22 = B22 =[C2, a1(1-V11), a2]
-
-//************* STEP 4 *************//
-// we start calculating the V11, V21, V22 values by repeated substitutions strating with V11=V21=V22=1 (assuming that CBP is 100%)
-// we carry on the repetitions until the difference between the new and the old values is less than a certain threshold value (e.g. 0.0000001)
-
-// const {incomingLoad_a, bu, route} = serviceClass;
-// const {link} = route;
-
-// if(link.length === 1){
-//   return incomingLoad_a * (1 - V11);
-// }
-
-// if(link.length === 2){
-//   return incomingLoad_a * (1 - V21);
-// }
-
-// return incomingLoad_a * (1 - V22);
-
 export const blockingProbabilityNetworkTopology = (
   links: networkTopology[],
   serviceClasses: ServiceClassWithRoute[],
-  previousResult?: { [key: string]: number }
+  previousResult: { [key: string]: number }
 ): { [key: string]: number } => {
   const result: { [key: string]: number } = {};
-
-  const predefinedValue = 0.0000001;
+  const finalResult: { [key: string]: number } = {};
   let initialResult = 1;
 
-  // o--------link1-------o----link2-----------o
-
-
+console.log('previousResult================', previousResult);
 
   links.forEach((link_in_network) => {
-    // o--------link1-------o
     let cbp = 0;
     let stateProbabilityValues;
 
+   
+
     let newServiceClasses: ServiceClassWithRoute[] = [];
-    const { capacity, link } = link_in_network; // link1
+    const { capacity } = link_in_network; // link1
+
+    console.log('newServiceClasses', newServiceClasses)
+
+   
 
     serviceClasses.forEach((serviceClass) => {
-  // service class 1, link 1
-      const { route, incomingLoad_a } = serviceClass; 
+      const { route } = serviceClass;
+      let incomingLoad_a= serviceClass.incomingLoad_a; // link 2, class 2 , load 1
+      let productForm = 1;
 
       if (route.includes(link_in_network.link)) {
+        console.log('link_in_network, serviceClass', link_in_network.link, serviceClass.serviceClass);
         const linkMinusCurrentLink = route.filter((link) => link !== link_in_network.link);
-        let productForm = 1;
+        
 
-        linkMinusCurrentLink.forEach((link) => {
-            result[`V_link${link}_class_${serviceClass.serviceClass}`] = 1;
-            
-           
-          productForm *= (1 - result[`V_link${link}_class_${serviceClass.serviceClass}`]);
-          result[`V_link${link}_class_${serviceClass.serviceClass}`] = (1 - result[`V_link${link}_class_${serviceClass.serviceClass}`])
-          console.log('result_____inside=======>',result)
+        console.log('linkMinusCurrentLink', linkMinusCurrentLink);
+
+
+        if (Object.keys(previousResult).length === 0) {
+          result[`V_link${link_in_network.link}_class_${serviceClass.serviceClass}`] = initialResult;
+        } else{
+          result[`V_link${link_in_network.link}_class_${serviceClass.serviceClass}`] = previousResult[`V_link${link_in_network.link}_class_${serviceClass.serviceClass}`];
+        }
+
+
+        linkMinusCurrentLink.forEach((otherLinks) => {
+          console.log('previous',previousResult[`V_link${otherLinks}_class_${serviceClass.serviceClass}`])
+  
+         console.log('otherLink',otherLinks);
+         if (Object.keys(previousResult).length === 0) {
+          result[`V_link${otherLinks}_class_${serviceClass.serviceClass}`] = initialResult;
+        } else{
+          result[`V_link${otherLinks}_class_${serviceClass.serviceClass}`] = previousResult[`V_link${link_in_network.link}_class_${serviceClass.serviceClass}`];
+        }
+
+        console.log('result should be 0', result[`V_link${otherLinks}_class_${serviceClass.serviceClass}`]);
+          productForm = (1 - result[`V_link${otherLinks}_class_${serviceClass.serviceClass}`])
+          console.log('productForm', productForm);
+
+          //result[`V_link${link_in_network.link}_class_${serviceClass.serviceClass}`] = (1 - result[`V_link${link}_class_${serviceClass.serviceClass}`])
+
+          productForm *= productForm;
+
+       
+          incomingLoad_a = incomingLoad_a * productForm;
+          console.log('incomingLoad', incomingLoad_a);
+          
         });
 
-        console.log('productForm_____1=======>',productForm)
+       const  neWSC = {
+          ...serviceClass,
+          incomingLoad_a: incomingLoad_a * productForm
+        }
+  
+        newServiceClasses.push(neWSC);
 
-        serviceClass.incomingLoad_a = incomingLoad_a *  productForm;
-
-        newServiceClasses.push(serviceClass);
+        console.log('newServiceClasses___after', newServiceClasses);
+  
       }
+
+     
     });
 
-    console.log(`which link_____1======>:  ${link}`   , `newServiceClasses:   ${JSON.stringify(newServiceClasses)}`)
-    //which link_____1======>:  1 newServiceClasses:   [{"serviceClass":1,"bu":1,"incomingLoad_a":0,"route":[1,2]}]
+
+    console.log('newServiceClasses', newServiceClasses);
 
     stateProbabilityValues = kaufmanRoberts(capacity, newServiceClasses);
-
-    console.log('what stateProbabilityValues_____2======>', stateProbabilityValues)
-    // what stateProbabilityValues_____2======> { 'q(0)': 1, 'q(1)': 0, 'q(2)': 0, 'q(3)': 0, 'q(4)': 0 }
-
-    console.log('result_____4===before=======>',result)
+    console.log('stateProbabilityValues', stateProbabilityValues);
 
     newServiceClasses.forEach((serviceClass) => {
-      console.log('which class______3=======> ', serviceClass)
-      //which class______3=======>  { serviceClass: 1, bu: 1, incomingLoad_a: 0, route: [ 1, 2 ] }
       const bu = serviceClass.bu;
       for (let j = capacity - bu + 1; j <= capacity; j++) {
         const q_j = stateProbabilityValues[`q(${j})`] || 0;
         cbp += q_j;
       }
 
-      console.log(`which link_____???======>:  ${link}`   , `newServiceClasses:   ${JSON.stringify(newServiceClasses)}`)
-
-      result[`V_link${link}_class_${serviceClass.serviceClass}`] = cbp;
-      console.log('result_____4=======>',result)
-      // result_____4=======> { V_link2_class_1: 1, V_link1_class_1: 0 }
-      // expected  V_link1_class_1: 0
+      console.log(link_in_network.link, serviceClass.serviceClass, cbp);
+      
+      console.log('what====cbp',  finalResult[`V_link${link_in_network.link}_class_${serviceClass.serviceClass}`]= cbp);
+      if( finalResult[`V_link${link_in_network.link}_class_${serviceClass.serviceClass}`] === undefined){
+        finalResult[`V_link${link_in_network.link}_class_${serviceClass.serviceClass}`] = cbp;
+      }
+      console.log('resultssssssss',  result);
+      finalResult[`V_link${link_in_network.link}_class_${serviceClass.serviceClass}`] = cbp;
+ 
     });
-
-    console.log('result_____5==================================')
+    
   });
 
-  console.log('previousResult', previousResult)
-  if (previousResult) {
-   // previousResult { V_link2_class_1: 0, V_link1_class_1: 0, V_link2_class_2: 0.2 }
-   console.log('currentResult', result)
-    let difference = 0;
-    for (const key in result) {
-      if (Math.abs(result[key] - previousResult[key]) > predefinedValue) {
-        console.log('is diff?', Math.abs(result[key] - previousResult[key]) )
-        difference++;
-        break;
-      }
-    }
-    if (difference === 0) {
-      return result;
-    }
-  }
+  console.log('previousResult======================', previousResult);
 
-
-  return blockingProbabilityNetworkTopology(links, serviceClasses, result);
-
+  return finalResult;
 };
 
 const links = [
@@ -180,4 +139,19 @@ const serviceClasses = [
   }
 ];
 
-console.log(blockingProbabilityNetworkTopology(links, serviceClasses));
+const calculateCallBloackingProbabilitiesInRLA = (
+  links: networkTopology[],
+  serviceClasses: ServiceClassWithRoute[]
+) => {
+  const initialServiceClasses = serviceClasses;
+  const predefinedValue = 0.0000001;
+  const cbp = blockingProbabilityNetworkTopology(links, serviceClasses, {});
+
+  console.log('1stIteration===================');
+  console.log('cbp', cbp);
+  console.log('2ndIteration===================');
+  const cbp_1 = blockingProbabilityNetworkTopology(links, initialServiceClasses, cbp);
+  console.log('cbp_1', cbp_1);
+  return cbp;
+};
+console.log(calculateCallBloackingProbabilitiesInRLA(links, serviceClasses));
