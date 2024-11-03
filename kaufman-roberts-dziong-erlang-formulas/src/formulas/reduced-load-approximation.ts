@@ -92,14 +92,17 @@ console.log('previousResult================', previousResult);
     console.log('newServiceClasses', newServiceClasses);
 
     stateProbabilityValues = kaufmanRoberts(capacity, newServiceClasses);
+    
     console.log('stateProbabilityValues', stateProbabilityValues);
 
     newServiceClasses.forEach((serviceClass) => {
       const bu = serviceClass.bu;
-      for (let j = capacity - bu + 1; j <= capacity; j++) {
+    // for (let j = capacity - bu + 1; j <= capacity; j++) {
+     let  j = capacity - bu + 1;
         const q_j = stateProbabilityValues[`q(${j})`] || 0;
+        console.log('q_j',q_j)
         cbp += q_j;
-      }
+   //  }
 
       console.log(link_in_network.link, serviceClass.serviceClass, cbp);
       
@@ -143,15 +146,16 @@ const calculateCallBloackingProbabilitiesInRLA = (
   links: networkTopology[],
   serviceClasses: ServiceClassWithRoute[]
 ) => {
-  const initialServiceClasses = serviceClasses;
   const predefinedValue = 0.0000001;
-  const cbp = blockingProbabilityNetworkTopology(links, serviceClasses, {});
+  let cbp = {};
+  cbp = blockingProbabilityNetworkTopology(links, serviceClasses, {});
 
   console.log('1stIteration===================');
   console.log('cbp', cbp);
   console.log('2ndIteration===================');
-  const cbp_1 = blockingProbabilityNetworkTopology(links, initialServiceClasses, cbp);
-  console.log('cbp_1', cbp_1);
+  cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
+
+  
   return cbp;
 };
 console.log(calculateCallBloackingProbabilitiesInRLA(links, serviceClasses));
