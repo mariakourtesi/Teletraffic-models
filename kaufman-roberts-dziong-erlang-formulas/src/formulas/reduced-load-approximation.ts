@@ -159,7 +159,12 @@ const calculateCallBloackingProbabilitiesInRLA = (
   cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
   console.log('3rdIteration===================');
   cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
-  
+  console.log('4thIteration===================');
+  cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
+  console.log('5thIteration===================');
+  cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
+  console.log('6thIteration===================');
+  cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
   return cbp;
 };
 console.log(calculateCallBloackingProbabilitiesInRLA(links, serviceClasses));
