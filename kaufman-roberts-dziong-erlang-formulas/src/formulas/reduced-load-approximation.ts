@@ -145,26 +145,55 @@ const serviceClasses = [
   }
 ];
 
-const calculateCallBloackingProbabilitiesInRLA = (
+// const calculateCallBloackingProbabilitiesInRLA = (
+//   links: networkTopology[],
+//   serviceClasses: ServiceClassWithRoute[]
+// ) => {
+//   const predefinedValue = 0.0000001;
+//   let cbp = {};
+//   cbp = blockingProbabilityNetworkTopology(links, serviceClasses, {});
+
+//   console.log('1stIteration===================');
+//   console.log('cbp', cbp);
+//   console.log('2ndIteration===================');
+//   cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
+//   console.log('3rdIteration===================');
+//   cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
+//   console.log('4thIteration===================');
+//   cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
+//   console.log('5thIteration===================');
+//   cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
+//   console.log('6thIteration===================');
+//   cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
+//   return cbp;
+// };
+
+const calculateCallBlockingProbabilitiesInRLA = (
   links: networkTopology[],
   serviceClasses: ServiceClassWithRoute[]
 ) => {
   const predefinedValue = 0.0000001;
-  let cbp = {};
+
+  // Define cbp and previousCbp with string keys and number values
+  let cbp: { [key: string]: number } = {};
+  let previousCbp: { [key: string]: number } = {};
+  let difference: number;
+
+  // Initial calculation
   cbp = blockingProbabilityNetworkTopology(links, serviceClasses, {});
 
-  console.log('1stIteration===================');
-  console.log('cbp', cbp);
-  console.log('2ndIteration===================');
-  cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
-  console.log('3rdIteration===================');
-  cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
-  console.log('4thIteration===================');
-  cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
-  console.log('5thIteration===================');
-  cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
-  console.log('6thIteration===================');
-  cbp = blockingProbabilityNetworkTopology(links, serviceClasses, cbp);
+  do {
+    previousCbp = { ...cbp };
+    cbp = blockingProbabilityNetworkTopology(links, serviceClasses, previousCbp);
+
+    // Calculate the maximum difference between current and previous values
+    difference = Math.max(
+      ...Object.keys(cbp).map(key => Math.abs(cbp[key] - previousCbp[key]))
+    );
+
+  } while (difference > predefinedValue);
+
   return cbp;
 };
-console.log(calculateCallBloackingProbabilitiesInRLA(links, serviceClasses));
+
+console.log(calculateCallBlockingProbabilitiesInRLA(links, serviceClasses));
