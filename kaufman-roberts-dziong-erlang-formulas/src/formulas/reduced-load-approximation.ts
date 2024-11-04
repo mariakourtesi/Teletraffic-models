@@ -28,7 +28,6 @@ const calculateIncomingLoad = (
       updatedLoad *= (1 - blockingProb); 
     }
   });
-
   return updatedLoad;
 };
 
@@ -50,12 +49,15 @@ export const blockingProbabilityNetworkTopology = (
       }));
 
     const stateProbabilityValues = kaufmanRoberts(link.capacity, newServiceClasses);
-    let cumulativeBlockingProb = 0;
 
     newServiceClasses.forEach((sc) => {
-      const j = link.capacity - sc.bu + 1;
-      const q_j = stateProbabilityValues[`q(${j})`] || 0;
-      cumulativeBlockingProb += q_j;
+      let cumulativeBlockingProb = 0;
+      const requested_bu = sc.bu;
+     
+      for (let j = link.capacity - requested_bu + 1; j <= link.capacity; j++) {
+        const q_i = stateProbabilityValues[`q(${j})`] || 0;
+        cumulativeBlockingProb += q_i;
+      }
 
       finalResult[`V_link${link.link}_class_${sc.serviceClass}`] = cumulativeBlockingProb;
     });
@@ -104,18 +106,3 @@ export const callBlockingProbabilityinRLA = (
 
   return result;
 };
-
-const links: networkTopology[] = [
-  { link: 1, capacity: 2 },
-  { link: 2, capacity: 3 },
-  { link: 3, capacity: 4 },
-  { link: 4, capacity: 5 }
-];
-
-const serviceClasses: ServiceClassWithRoute[] = [
-  { serviceClass: 1, bu: 1, incomingLoad_a: 1, route: [1, 2, 3, 4] },
-  { serviceClass: 2, bu: 2, incomingLoad_a: 1, route: [2, 3] },
-  { serviceClass: 3, bu: 2, incomingLoad_a: 1, route: [3, 4] }
-];
-
-console.log(callBlockingProbabilityinRLA(links, serviceClasses));
