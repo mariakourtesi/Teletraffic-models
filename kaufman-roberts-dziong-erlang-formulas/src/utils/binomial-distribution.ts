@@ -1,9 +1,4 @@
-const factorial = (num: number): number => {
-  if (num === 0) {
-    return 1;
-  }
-  return num * factorial(num - 1);
-};
+import { factorial } from './factorial';
 
 const calculateBinomialCoefficient = (numOfTrials: number, numberOfSuccesses: number): number => {
   return factorial(numOfTrials) / (factorial(numberOfSuccesses) * factorial(numOfTrials - numberOfSuccesses));
