@@ -6,11 +6,11 @@ export const conditionalTransitionProbability = (
   groupCount: number,
   totalCapacity: number
 ) => {
-  const availableArrangements = groupCount * totalCapacity - currentState;
+  const availableArrangements = (groupCount * totalCapacity) - currentState;
   const adjustedClassCapacity = classCapacity - 1;
 
   const nominator = possibleArrangements(availableArrangements, groupCount, adjustedClassCapacity);
   const denominator = possibleArrangements(availableArrangements, groupCount, totalCapacity);
 
-  return 1 - nominator / denominator;
+  return 1 - (nominator / denominator);
 };
