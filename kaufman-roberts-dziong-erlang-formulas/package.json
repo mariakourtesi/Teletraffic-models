@@ -15,6 +15,7 @@
   },
   "author": "Maria Kourtesi",
   "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.9.1",
     "@types/figlet": "^1.5.8",
     "@types/jest": "^29.5.12",

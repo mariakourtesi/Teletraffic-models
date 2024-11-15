@@ -1,4 +1,3 @@
-import { ServiceClassWithRoute } from '../types';
 import { numberOfDigitsAfterDecimal } from '../utils';
 import { calculateValidStates } from './valid-link-states-in-network-topology';
 
@@ -116,7 +115,7 @@ export const dziongRobertsFormula = (
     const n1 = state[0];
     const n2 = state[1];
 
-    let linkState: number[] = [];
+    const linkState: number[] = [];
 
     // Calculate the valid link state based on the number of calls for each service class
     linkState.push(n1);

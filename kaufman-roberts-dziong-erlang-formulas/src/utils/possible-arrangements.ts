@@ -1,27 +1,29 @@
 import { binomialCoefficient } from './binomial-distribution';
 
 export const possibleArrangements = (
-  waysToArrangeX: number,
-  kGroups: number,
-  capacity: number
+  totalArrangements: number,
+  groupCount: number,
+  maxCapacity: number
 ): number => {
-  if (waysToArrangeX > kGroups * capacity) {
+  if (totalArrangements > groupCount * maxCapacity) {
     return 0;
   }
 
-  const maxNumbOfIterations = waysToArrangeX / (capacity + 1);
+  const maxIterations = Math.floor(totalArrangements / (maxCapacity + 1));
 
-  console.log('iterations', maxNumbOfIterations);
+  let totalPossibleArrangements = 0;
 
-  let possibleArrangements = 0;
-  for (let i = 0; i <= maxNumbOfIterations; i++) {
-    const possibleWays =
+  for (let i = 0; i <= maxIterations; i++) {
+    const arrangementCount =
       Math.pow(-1, i) *
-      binomialCoefficient(kGroups, i) *
-      binomialCoefficient(waysToArrangeX + (kGroups - 1) - i * (capacity + 1), kGroups - 1);
+      binomialCoefficient(groupCount, i) *
+      binomialCoefficient(
+        totalArrangements + groupCount - 1 - i * (maxCapacity + 1),
+        groupCount - 1
+      );
 
-    possibleArrangements += possibleWays;
+    totalPossibleArrangements += arrangementCount;
   }
 
-  return possibleArrangements;
+  return totalPossibleArrangements;
 };
