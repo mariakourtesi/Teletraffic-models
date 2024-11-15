@@ -1,6 +1,6 @@
 import { factorial } from './factorial';
 
-const binomialCoefficient = (nTotalItems: number, kSelectedItems: number): number => {
+export const binomialCoefficient = (nTotalItems: number, kSelectedItems: number): number => {
   return factorial(nTotalItems) / (factorial(kSelectedItems) * factorial(nTotalItems - kSelectedItems));
 };
 
