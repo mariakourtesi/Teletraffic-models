@@ -27,6 +27,3 @@ export const possibleArrangements = (
 
   return totalPossibleArrangements;
 };
-
-console.log(possibleArrangements(5, 3, 4)); // 18
-console.log(possibleArrangements(5, 3, 3)); // 6
