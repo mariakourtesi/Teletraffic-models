@@ -28,4 +28,3 @@ export const blockingProbabilityLAR = (
     return result;
   }
 
-  console.log(blockingProbabilityLAR(2, 5, [{serviceClass: 1, bu: 1, incomingLoad_a: 1 }]));

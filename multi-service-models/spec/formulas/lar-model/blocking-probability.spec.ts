@@ -1,10 +1,40 @@
 import { blockingProbabilityLAR } from '../../../src/formulas/lar-model/blocking-probability';
 describe('blocking probability', () => {
   describe('LAR model blocking propability', () => {
-    it('should calculate the blocking probability for the system', () => {
-      const result = blockingProbabilityLAR(2, 5, [{ serviceClass: 1, bu: 1, incomingLoad_a: 1 }]);
-      expect(result).toEqual({
-        E_class_1: '0.0000001%'
+
+    describe.each([
+      {
+        description: '1 service class with bu 1 and incoming load 1',
+        distinctResourceCount: 2,
+        individualResourceCapacity: 5,
+        serviceClasses: [{ serviceClass: 1, bu: 1, incomingLoad_a: 1 }],
+        expectedBlocking: {
+          E_class_1: '0.0000001%'
+        }
+      },
+      {
+        description: '1 service class with bu 2 and incoming load 1',
+        distinctResourceCount: 2,
+        individualResourceCapacity: 5,
+        serviceClasses: [{ serviceClass: 1, bu: 2, incomingLoad_a: 1 }],
+        expectedBlocking: {
+          E_class_1: '0.0071648%'
+        } 
+      },
+      {
+        description: '2 service classes',
+        distinctResourceCount: 2,
+        individualResourceCapacity: 5,
+        serviceClasses: [{ serviceClass: 1, bu: 1, incomingLoad_a: 1 }, { serviceClass: 2, bu: 2, incomingLoad_a: 1 }],
+        expectedBlocking: {
+          E_class_1: '0.0036756%',
+          E_class_2: '0.0203967%'
+        }  
+      }
+    ])('when $description', ({distinctResourceCount, individualResourceCapacity, serviceClasses, expectedBlocking}) => {
+      it('should calculate correctly the blocking probability for the system', () => {
+        const result = blockingProbabilityLAR(distinctResourceCount, individualResourceCapacity, serviceClasses);
+        expect(result).toEqual(expectedBlocking);
       });
     });
   });
