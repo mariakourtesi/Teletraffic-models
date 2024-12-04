@@ -2,15 +2,15 @@ import { possibleArrangements } from './possible-arrangements';
 
 export const conditionalTransitionProbability = (
   currentState: number,
-  classCapacity: number,
-  groupCount: number,
-  totalCapacity: number
+  requiredAllocationUnitsForClass: number,
+  distinctResourceCount: number,
+  individualResourceCapacity: number
 ) => {
-  const availableArrangements = (groupCount * totalCapacity) - currentState;
-  const adjustedClassCapacity = classCapacity - 1;
+  const availableArrangements = (distinctResourceCount * individualResourceCapacity) - currentState;
+  const adjustedClassCapacity = requiredAllocationUnitsForClass - 1;
 
-  const nominator = possibleArrangements(availableArrangements, groupCount, adjustedClassCapacity);
-  const denominator = possibleArrangements(availableArrangements, groupCount, totalCapacity);
+  const nominator = possibleArrangements(availableArrangements, distinctResourceCount, adjustedClassCapacity);
+  const denominator = possibleArrangements(availableArrangements, distinctResourceCount, individualResourceCapacity);
 
   return 1 - (nominator / denominator);
 };

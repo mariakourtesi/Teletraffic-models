@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 import { Command } from 'commander';
 import figlet from 'figlet';
-import kaufmanRoberts from './formulas/kaufman-roberts';
+import kaufmanRoberts from './commands/kaufman-roberts';
 
 console.log(figlet.textSync('EMLM'));
 

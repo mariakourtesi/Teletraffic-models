@@ -58,5 +58,3 @@ export const kaufmanRoberts = (capacity: number, serviceClasses: ServiceClass[])
   return result;
 };
 
-
-console.log(kaufmanRoberts(4, [ { serviceClass: 1, bu: 1, incomingLoad_a: 0}]));
