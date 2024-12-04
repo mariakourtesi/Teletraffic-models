@@ -12,5 +12,11 @@ export const conditionalTransitionProbability = (
   const nominator = possibleArrangements(availableArrangements, distinctResourceCount, adjustedClassCapacity);
   const denominator = possibleArrangements(availableArrangements, distinctResourceCount, individualResourceCapacity);
 
-  return 1 - (nominator / denominator);
+  let calculateArrangements = nominator / denominator;
+  
+  if (calculateArrangements <= 0 || isNaN(calculateArrangements)) {
+    calculateArrangements = 0;
+  }
+
+  return 1 - calculateArrangements;
 };
