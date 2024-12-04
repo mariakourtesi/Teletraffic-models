@@ -69,5 +69,3 @@ export const unnormalisedLARModel = (
 
   return results;
 };
-
-console.log(unnormalisedLARModel(2, 5, [{ serviceClass: 1, bu: 1, incomingLoad_a: 1 }]));

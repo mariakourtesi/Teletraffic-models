@@ -1,5 +1,25 @@
 import { callBlockingProbability } from '../../src/formulas/call-blocking-probability';
-describe('Call Blocking probability - complete sharing policy', () => {
+
+
+describe('Call Blocking probability with 1 service class - complete sharing policy', () => {
+  const capacity = 10;
+  const serviceClasses = [
+    {
+      serviceClass: 1,
+      bu: 1,
+      incomingLoad_a: 1
+    }
+  ];
+
+  it('should calculate the CBP for the system', () => {
+    const result = callBlockingProbability(capacity, serviceClasses);
+    expect(result).toEqual({
+      B_class_1: '0.00001%'
+    });
+  });
+});
+
+describe('Call Blocking probability with 2 service classes - complete sharing policy', () => {
   const capacity = 5;
   const serviceClasses = [
     {
