@@ -8,14 +8,18 @@ export interface ServiceClassWithBR extends ServiceClass {
   tk: number; // reserved bandwidth
 }
 
-export interface ServiceClassWithRoute  {
-  serviceClass: number;
+export interface RequestedBandwidthFromLink {
+  link: number;
   bu: number;
+}
+
+export interface ServiceClassWithRoute {
+  serviceClass: number;
   incomingLoad_a: number;
-  route: number[];
+  route: RequestedBandwidthFromLink[];
   tk?: number;
 }
 
 export interface networkTopology {
- [link: string]: number;
+  [link: string]: number;
 }

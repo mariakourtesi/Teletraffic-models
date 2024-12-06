@@ -1,5 +1,5 @@
-import { networkTopology, ServiceClassWithRoute } from '../types';
 import { kaufmanRoberts } from './kaufman-roberts-formula';
+import { networkTopology, ServiceClassWithRoute } from '../types';
 
 const initializeResult = (
   key: string,
@@ -8,7 +8,6 @@ const initializeResult = (
 ): number => {
   return previousResult[key] !== undefined ? previousResult[key] : initialResult;
 };
-
 
 const calculateIncomingLoad = (
   serviceClass: ServiceClassWithRoute,
@@ -21,11 +20,11 @@ const calculateIncomingLoad = (
   let updatedLoad = incomingLoad_a;
 
   route.forEach((otherLink) => {
-    if (otherLink !== link.link) {
-      const key = `V_link${otherLink}_class_${scId}`;
+    if (otherLink.link !== link.link) {
+      const key = `V_link${otherLink.link}_class_${scId}`;
       const blockingProb = initializeResult(key, previousResult, initialResult);
       result[key] = blockingProb;
-      updatedLoad *= (1 - blockingProb); 
+      updatedLoad *= 1 - blockingProb;
     }
   });
   return updatedLoad;
@@ -42,18 +41,25 @@ export const blockingProbabilityNetworkTopology = (
 
   links.forEach((link) => {
     const newServiceClasses = serviceClasses
-      .filter(sc => sc.route.includes(link.link))
-      .map(sc => ({
+      .filter((sc) => sc.route.some((r) => r.link === link.link))
+      .map((sc) => ({
         ...sc,
-        incomingLoad_a: calculateIncomingLoad(sc, link, result, previousResult, initialResult),
+        bu: sc.route.find((r) => r.link === link.link)?.bu || 0,
+        incomingLoad_a: calculateIncomingLoad(sc, link, result, previousResult, initialResult)
       }));
 
-    const stateProbabilityValues = kaufmanRoberts(link.capacity, newServiceClasses);
+    const getServiceClassWithoutRoute = newServiceClasses.map((sc) => ({
+      serviceClass: sc.serviceClass,
+      bu: sc.bu,
+      incomingLoad_a: sc.incomingLoad_a
+    }));
+
+    const stateProbabilityValues = kaufmanRoberts(link.capacity, getServiceClassWithoutRoute);
 
     newServiceClasses.forEach((sc) => {
       let cumulativeBlockingProb = 0;
       const requested_bu = sc.bu;
-     
+
       for (let j = link.capacity - requested_bu + 1; j <= link.capacity; j++) {
         const q_i = stateProbabilityValues[`q(${j})`] || 0;
         cumulativeBlockingProb += q_i;
@@ -70,7 +76,7 @@ const calculateBlockingWithReducedTrafficLoad = (
   links: networkTopology[],
   serviceClasses: ServiceClassWithRoute[]
 ): { [key: string]: number } => {
-  const threshold =0.000001;
+  const threshold = 0.000001;
   let currentResult = blockingProbabilityNetworkTopology(links, serviceClasses, {});
   let difference: number;
 
@@ -78,8 +84,8 @@ const calculateBlockingWithReducedTrafficLoad = (
     const previousResult = { ...currentResult };
     currentResult = blockingProbabilityNetworkTopology(links, serviceClasses, previousResult);
     difference = Math.max(
-      ...Object.keys(currentResult).map(
-        key => Math.abs(currentResult[key] - (previousResult[key] || 0))
+      ...Object.keys(currentResult).map((key) =>
+        Math.abs(currentResult[key] - (previousResult[key] || 0))
       )
     );
   } while (difference > threshold);
@@ -97,7 +103,7 @@ export const callBlockingProbabilityinRLA = (
   serviceClasses.forEach((sc) => {
     const { serviceClass, route } = sc;
     const totalBlockingProbability = route.reduce((cbp, link) => {
-      const key = `V_link${link}_class_${serviceClass}`;
+      const key = `V_link${link.link}_class_${serviceClass}`;
       return cbp * (1 - (blockingProbabilities[key] || 0));
     }, 1);
 
@@ -106,3 +112,4 @@ export const callBlockingProbabilityinRLA = (
 
   return result;
 };
+
