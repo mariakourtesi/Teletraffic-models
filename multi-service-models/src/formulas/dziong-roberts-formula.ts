@@ -1,6 +1,8 @@
 import { numberOfDigitsAfterDecimal } from '../utils';
 import { calculateValidStates } from './valid-link-states-in-network-topology';
 
+//TODO: to revisit the tests and fix the formula
+
 interface ServiceClass {
   serviceClass: number;
   lambda: number; // Arrival rate (in Erlangs)
@@ -154,4 +156,4 @@ const serviceClasses: ServiceClass[] = [
   }
 ];
 
-console.log(dziongRobertsFormula(topology, serviceClasses));
+// console.log(dziongRobertsFormula(topology, serviceClasses));
