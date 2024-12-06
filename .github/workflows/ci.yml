@@ -22,8 +22,13 @@ jobs:
       with:
         node-version: 20 
 
+    - name: Navigate to project directory
+      run: cd multi-service-models
+
     - name: Install dependencies
       run: npm install
+      working-directory: ./multi-service-models
 
     - name: Run tests
       run: npm test
+      working-directory: ./multi-service-models
