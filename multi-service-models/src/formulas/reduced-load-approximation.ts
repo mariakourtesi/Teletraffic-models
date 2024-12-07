@@ -48,13 +48,7 @@ export const blockingProbabilityNetworkTopology = (
         incomingLoad_a: calculateIncomingLoad(sc, link, result, previousResult, initialResult)
       }));
 
-    const getServiceClassWithoutRoute = newServiceClasses.map((sc) => ({
-      serviceClass: sc.serviceClass,
-      bu: sc.bu,
-      incomingLoad_a: sc.incomingLoad_a
-    }));
-
-    const stateProbabilityValues = kaufmanRoberts(link.capacity, getServiceClassWithoutRoute);
+    const stateProbabilityValues = kaufmanRoberts(link.capacity, newServiceClasses);
 
     newServiceClasses.forEach((sc) => {
       let cumulativeBlockingProb = 0;
@@ -112,4 +106,3 @@ export const callBlockingProbabilityinRLA = (
 
   return result;
 };
-

@@ -147,7 +147,7 @@ describe('Reduced Load Approximation', () => {
         B2: 0.39952
       }
     },
-  ])(`%s`, ({ links, serviceClasses, expected }) => {
+  ])(`When $description`, ({ links, serviceClasses, expected }) => {
     it('should calculate the CBP for each service class that traverses the link network topology', () => {
       const result = callBlockingProbabilityinRLA(links, serviceClasses);
       expect(result).toEqual(expected);
