@@ -76,6 +76,7 @@ const calculateBlockingWithReducedTrafficLoad = (
 
   do {
     const previousResult = { ...currentResult };
+   
     currentResult = blockingProbabilityNetworkTopology(links, serviceClasses, previousResult);
     difference = Math.max(
       ...Object.keys(currentResult).map((key) =>
@@ -98,6 +99,7 @@ export const callBlockingProbabilityinRLA = (
     const { serviceClass, route } = sc;
     const totalBlockingProbability = route.reduce((cbp, link) => {
       const key = `V_link${link.link}_class_${serviceClass}`;
+      console.log(key, blockingProbabilities[key]);
       return cbp * (1 - (blockingProbabilities[key] || 0));
     }, 1);
 
@@ -106,3 +108,45 @@ export const callBlockingProbabilityinRLA = (
 
   return result;
 };
+
+const links = [
+  { link: 1, capacity: 10 },
+  { link: 2, capacity: 12 },
+  { link: 3, capacity: 11 },
+  { link: 4, capacity: 10 }
+];
+
+const serviceClasses = [
+  {
+    serviceClass: 1,
+    incomingLoad_a: 3,
+    route: [
+      { link: 1, bu: 1 },
+      { link: 2, bu: 1 },
+      { link: 3, bu: 1 },
+      { link: 4, bu: 2 }
+    ]
+  },
+  {
+    serviceClass: 2,
+    incomingLoad_a: 1.5,
+    route: [
+      { link: 1, bu: 2 },
+      { link: 2, bu: 2 },
+      { link: 3, bu: 2 },
+      { link: 4, bu: 2 }
+    ]
+  },
+  {
+    serviceClass: 3,
+    incomingLoad_a: 1,
+    route: [
+      { link: 1, bu: 3 },
+      { link: 2, bu: 3 },
+      { link: 3, bu: 3 },
+      { link: 4, bu: 2 }
+    ]
+  }
+];
+
+console.log(callBlockingProbabilityinRLA(links, serviceClasses));

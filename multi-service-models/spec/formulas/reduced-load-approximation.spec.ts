@@ -73,9 +73,7 @@ describe('Reduced Load Approximation', () => {
           serviceClass: 2,
           bu: 2,
           incomingLoad_a: 1,
-          route: [
-            { link: 2, bu: 2 }
-          ]
+          route: [{ link: 2, bu: 2 }]
         }
       ],
       expected: {
@@ -122,7 +120,8 @@ describe('Reduced Load Approximation', () => {
       expected: { B1: 0.46216, B2: 0.76463, B3: 0.06567 }
     },
     {
-      description: '2 links and 2 service classes, service class 1 requires different bu from each link',
+      description:
+        '2 links and 2 service classes, service class 1 requires different bu from each link',
       links: [
         { link: 1, capacity: 4 },
         { link: 2, capacity: 5 }
@@ -147,6 +146,49 @@ describe('Reduced Load Approximation', () => {
         B2: 0.39952
       }
     },
+    {
+      description:
+        '4 links and 3 service classes, service class 2 requires different bu from each link',
+      links: [
+        { link: 1, capacity: 10 },
+        { link: 2, capacity: 12 },
+        { link: 3, capacity: 11 },
+        { link: 4, capacity: 10 }
+      ],
+      serviceClasses: [
+        {
+          serviceClass: 1,
+          incomingLoad_a: 3,
+          route: [
+            { link: 1, bu: 1 },
+            { link: 2, bu: 1 },
+            { link: 3, bu: 1 },
+            { link: 4, bu: 2 }
+          ]
+        },
+        {
+          serviceClass: 2,
+          incomingLoad_a: 1.5,
+          route: [
+            { link: 1, bu: 2 },
+            { link: 2, bu: 2 },
+            { link: 3, bu: 2 },
+            { link: 4, bu: 2 }
+          ]
+        },
+        {
+          serviceClass: 3,
+          incomingLoad_a: 1,
+          route: [
+            { link: 1, bu: 3 },
+            { link: 2, bu: 3 },
+            { link: 3, bu: 3 },
+            { link: 4, bu: 2 }
+          ]
+        }
+      ],
+      expected: { B1: 0.31666, B2: 0.41514, B3: 0.53253 }
+    }
   ])(`When $description`, ({ links, serviceClasses, expected }) => {
     it('should calculate the CBP for each service class that traverses the link network topology', () => {
       const result = callBlockingProbabilityinRLA(links, serviceClasses);
