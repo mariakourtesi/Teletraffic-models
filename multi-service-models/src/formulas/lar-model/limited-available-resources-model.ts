@@ -1,15 +1,24 @@
 import { ServiceClass } from '../../types';
 import { conditionalTransitionProbability } from '../../utils/conditional-transition-probability';
-
 const calculateOccupancyProbability = (
   currentState: number,
   distinctResourceCount: number,
   individualResourceCapacity: number,
-  serviceClasses: ServiceClass[]
+  serviceClasses: ServiceClass[],
+  results: Record<number, number> = {}
 ): number => {
-  const results: number[] = [];
-  // Base case: if the current state is zero, the probability is 1.
+
+  if (distinctResourceCount <= 0 || individualResourceCapacity <= 0 || serviceClasses.length === 0) {
+    throw new Error("Invalid inputs: ensure positive resource counts and non-empty service classes.");
+  }
+
+  if (currentState in results) {
+    return results[currentState];
+  }
+
+  // Base case: current state is zero
   if (currentState === 0) {
+    results[0] = 1;
     return 1;
   }
 
@@ -30,11 +39,16 @@ const calculateOccupancyProbability = (
       individualResourceCapacity
     );
 
+    if (isNaN(conditionalProbability) || conditionalProbability < 0) {
+      throw new Error("Invalid conditional probability calculated.");
+    }
+
     const recursiveProbability = calculateOccupancyProbability(
       currentState - bu,
       distinctResourceCount,
       individualResourceCapacity,
-      serviceClasses
+      serviceClasses,
+      results
     );
 
     totalProbability += incomingLoad_a * bu * conditionalProbability * recursiveProbability;
@@ -42,10 +56,14 @@ const calculateOccupancyProbability = (
 
   const result = (1 / currentState) * totalProbability;
 
-  results[currentState] = result;
+  if (isNaN(result) || result < 0) {
+    throw new Error("Invalid result calculated.");
+  }
 
+  results[currentState] = result;
   return result;
 };
+
 
 export const unnormalisedLARModel = (
   distinctResourceCount: number,
@@ -59,6 +77,7 @@ export const unnormalisedLARModel = (
   const totalCapacity = distinctResourceCount * individualResourceCapacity;
 
   for (let i = 0; i <= totalCapacity; i++) {
+
     results[i] = calculateOccupancyProbability(
       i,
       distinctResourceCount,
@@ -69,3 +88,25 @@ export const unnormalisedLARModel = (
 
   return results;
 };
+
+const distinctResourceCount = 3;
+const individualResourceCapacity = 10;
+const serviceClasses = [
+  {
+    serviceClass: 1,
+    incomingLoad_a: 9,
+    bu: 1
+  },
+  {
+    serviceClass: 2,
+    incomingLoad_a: 4.5,
+    bu: 2
+  },
+  {
+    serviceClass: 3,
+    incomingLoad_a: 3,
+   bu: 3
+  }
+];
+
+console.log(unnormalisedLARModel(distinctResourceCount, individualResourceCapacity, serviceClasses));
