@@ -31,7 +31,7 @@ export const callBlockingProbability = (
       cbp += q_j;
     }
 
-    result[`B_class_${index + 1}`] = `${(cbp * 100).toFixed(5)}%`;
+    result[`B_class_${index + 1}`] = `${(cbp).toFixed(7)}`;
   });
 
   return result;

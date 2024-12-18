@@ -109,4 +109,4 @@ const serviceClasses = [
   }
 ];
 
-console.log(unnormalisedLARModel(distinctResourceCount, individualResourceCapacity, serviceClasses));
+// console.log(unnormalisedLARModel(distinctResourceCount, individualResourceCapacity, serviceClasses));

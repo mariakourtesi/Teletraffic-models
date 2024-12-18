@@ -23,7 +23,7 @@ export const blockingProbabilityLAR = (
            const p_n = probabilities[n] || 0;
         cbp += p_n*(1 - conditionalTransitionProbability(n, bu, distinctResourceCount, individualResourceCapacity));
        }
-       result[`E_class_${index + 1}`] = `${(cbp/normalisationConstant).toFixed(numberOfDigitsAfterDecimal)}%`;
+       result[`E_class_${index + 1}`] = `${(cbp/normalisationConstant).toFixed(numberOfDigitsAfterDecimal)}`;
     });
     return result;
   }

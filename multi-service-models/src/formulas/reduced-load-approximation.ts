@@ -73,8 +73,10 @@ const calculateBlockingWithReducedTrafficLoad = (
   const threshold = 0.000001;
   let currentResult = blockingProbabilityNetworkTopology(links, serviceClasses, {});
   let difference: number;
+  let iterations = 0; 
 
   do {
+    iterations++;
     const previousResult = { ...currentResult };
    
     currentResult = blockingProbabilityNetworkTopology(links, serviceClasses, previousResult);
@@ -84,7 +86,7 @@ const calculateBlockingWithReducedTrafficLoad = (
       )
     );
   } while (difference > threshold);
-
+  console.log(`Number of iterations: ${iterations}`);
   return currentResult;
 };
 
@@ -109,44 +111,67 @@ export const callBlockingProbabilityinRLA = (
   return result;
 };
 
-const links = [
-  { link: 1, capacity: 10 },
-  { link: 2, capacity: 12 },
-  { link: 3, capacity: 11 },
-  { link: 4, capacity: 10 }
-];
 
-const serviceClasses = [
-  {
-    serviceClass: 1,
-    incomingLoad_a: 3,
-    route: [
-      { link: 1, bu: 1 },
-      { link: 2, bu: 1 },
-      { link: 3, bu: 1 },
-      { link: 4, bu: 2 }
-    ]
-  },
-  {
-    serviceClass: 2,
-    incomingLoad_a: 1.5,
-    route: [
-      { link: 1, bu: 2 },
-      { link: 2, bu: 2 },
-      { link: 3, bu: 2 },
-      { link: 4, bu: 2 }
-    ]
-  },
-  {
-    serviceClass: 3,
-    incomingLoad_a: 1,
-    route: [
-      { link: 1, bu: 3 },
-      { link: 2, bu: 3 },
-      { link: 3, bu: 3 },
-      { link: 4, bu: 2 }
-    ]
-  }
-];
+export const callBlockingProbabilityinRLAForProposedModel = (
+  links: networkTopology[],
+  serviceClasses: ServiceClassWithRoute[]
+): string[] => {
+  const blockingProbabilities = calculateBlockingWithReducedTrafficLoad(links, serviceClasses);
+  const logs: string[] = []; 
 
-console.log(callBlockingProbabilityinRLA(links, serviceClasses));
+  serviceClasses.forEach((sc) => {
+    const { serviceClass, route } = sc;
+    route.forEach((link) => {
+      const key = `V_link${link.link}_class_${serviceClass}`;
+      const value = blockingProbabilities[key];
+      const logEntry = `${key}: ${value}`; 
+      logs.push(logEntry); 
+    });
+  });
+
+  return logs; 
+};
+
+
+
+// const links = [
+//   { link: 1, capacity: 10 },
+//   { link: 2, capacity: 12 },
+//   { link: 3, capacity: 11 },
+//   { link: 4, capacity: 10 }
+// ];
+
+// const serviceClasses = [
+//   {
+//     serviceClass: 1,
+//     incomingLoad_a: 3,
+//     route: [
+//       { link: 1, bu: 1 },
+//       { link: 2, bu: 1 },
+//       { link: 3, bu: 1 },
+//       { link: 4, bu: 2 }
+//     ]
+//   },
+//   {
+//     serviceClass: 2,
+//     incomingLoad_a: 1.5,
+//     route: [
+//       { link: 1, bu: 2 },
+//       { link: 2, bu: 2 },
+//       { link: 3, bu: 2 },
+//       { link: 4, bu: 2 }
+//     ]
+//   },
+//   {
+//     serviceClass: 3,
+//     incomingLoad_a: 1,
+//     route: [
+//       { link: 1, bu: 3 },
+//       { link: 2, bu: 3 },
+//       { link: 3, bu: 3 },
+//       { link: 4, bu: 2 }
+//     ]
+//   }
+// ];
+
+// console.log(callBlockingProbabilityinRLA(links, serviceClasses));
