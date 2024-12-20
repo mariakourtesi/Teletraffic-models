@@ -1,4 +1,4 @@
-# Erlang Multirate Loss Models
+# Multirate Loss Models
 
 ## Description
 This project implements various mathematical models related to network optimization and performance analysis, 
