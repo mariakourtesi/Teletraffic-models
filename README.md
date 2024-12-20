@@ -7,5 +7,60 @@ These models are commonly used in the field of telecommunications and beyond to 
 
 It also includes the implementation of the proposed analytic model, which calculates blocking probabilities in a cloud system offering IaaS, as described in the paper  <a href="https://ieeexplore.ieee.org/document/9483923" target="_blank">A Multiparameter Analytical Model of the Physical Infrastructure of a Cloud-Based System<a>
 
+## Installation
+1. Clone the repository: `git clone https://https://github.com/mariakourtesi/Teletraffic-models.git`
+2. Navigate to the project directory: `cd multi-service-models`
+3. Install the required dependencies: `npm ci`
 
+Please note: you need Node v20
+
+## Running the formulas
+Please note that this is work in progress and more formulas will be added in the CLI.
+At the moment it only returns the blocking states in the Kaufman-Roberts (complete-sharing policy) model
+1. Build the app: `npm run build`
+2. Install it locally: `npm install -g .`
+3. Run the command: `emlm kaufman-roberts -c 5 -s`
+
+You can run the command in either of the following ways:
+
+**In Bash**:
+You can create a json file and add the array of service classes there.
+```emlm kaufman-roberts --capacity 5 --serviceClasses "$(cat src/serviceClasses.json)"```
+
+Or, by directly providing the JSON string:
+```emlm kaufman-roberts --capacity 5 --serviceClasses '[{"serviceClass": 1, "bu": 1, "incomingLoad_a": 2}, {"serviceClass": 2, "bu": 2, "incomingLoad_a": 1}]'```
+
+**In Command Prompt** (for windows users):
+```emlm kaufman-roberts --capacity 5 --serviceClasses '[{"serviceClass": 1, "bu": 1, "incomingLoad_a": 2}, {"serviceClass": 2, "bu": 2, "incomingLoad_a": 1}]'```
+
+## Validation Instructions
+To verify that this implementation works, follow these steps:
+Navigate to Teletraffic Models https://teletraffic-models.appspot.com/ 
+
+
+Select the `Kaufman - Roberts Formula option`.
+
+- Set the following parameters:
+  - Link Capacity (C): 4
+  - Number of Service Classes: 2
+
+Configure the service classes:
+
+- Service Class 1:
+   - Traffic Load (a): 2
+   - Bandwidth Demand: 1
+- Service Class 2:
+   - Traffic Load (a): 1
+   - Bandwidth Demand: 2
+
+The expected output is:
+
+The output is:
+| J    | q(j)    | Q(j) Normalised values |
+| ---- | ------- | ---------------------  |
+|   0  |    1    |       0.08             |
+|   1  |    2    |       0.16             |
+|   2  |    3    |       0.24             |
+|   3  | 3.3333  |       0.26667          |
+|   4  | 3.1667  |       0.25333          |
 

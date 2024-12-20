@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { ServiceClass } from '../formulas/types';
-import { kaufmanRoberts } from '../formulas/kaufman-roberts-formula';
+import { kaufmanRoberts } from '../formulas/kaufman-roberts/kaufman-roberts-formula';
 
 export default () =>
   new Command('kaufman-roberts')
