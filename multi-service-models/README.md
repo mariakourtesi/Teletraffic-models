@@ -15,7 +15,7 @@ Each directory /formulas/* contains its own README with more information about e
 [`cd src/formulas/dziong-roberts-model`](src/formulas/dziong-roberts-model)
 
 #### For the Reduced Load Approximation formula or knapsack approximation
-`cd src/formulas/reduced-load-approximation`
+[`cd src/formulas/reduced-load-approximation`](src/formulas/reduced-load-approximation)
 
 #### For the Limited Available Resources Model
 [`cd src/formulas/limited-available-resources-model`](src/formulas/limited-available-resources-model)
