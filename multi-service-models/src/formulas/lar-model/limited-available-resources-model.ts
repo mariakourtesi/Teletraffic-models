@@ -88,25 +88,3 @@ export const unnormalisedLARModel = (
 
   return results;
 };
-
-const distinctResourceCount = 3;
-const individualResourceCapacity = 10;
-const serviceClasses = [
-  {
-    serviceClass: 1,
-    incomingLoad_a: 9,
-    bu: 1
-  },
-  {
-    serviceClass: 2,
-    incomingLoad_a: 4.5,
-    bu: 2
-  },
-  {
-    serviceClass: 3,
-    incomingLoad_a: 3,
-   bu: 3
-  }
-];
-
-// console.log(unnormalisedLARModel(distinctResourceCount, individualResourceCapacity, serviceClasses));
