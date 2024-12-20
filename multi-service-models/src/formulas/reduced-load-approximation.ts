@@ -132,46 +132,4 @@ export const callBlockingProbabilityinRLAForProposedModel = (
   return logs; 
 };
 
-
-
-// const links = [
-//   { link: 1, capacity: 10 },
-//   { link: 2, capacity: 12 },
-//   { link: 3, capacity: 11 },
-//   { link: 4, capacity: 10 }
-// ];
-
-// const serviceClasses = [
-//   {
-//     serviceClass: 1,
-//     incomingLoad_a: 3,
-//     route: [
-//       { link: 1, bu: 1 },
-//       { link: 2, bu: 1 },
-//       { link: 3, bu: 1 },
-//       { link: 4, bu: 2 }
-//     ]
-//   },
-//   {
-//     serviceClass: 2,
-//     incomingLoad_a: 1.5,
-//     route: [
-//       { link: 1, bu: 2 },
-//       { link: 2, bu: 2 },
-//       { link: 3, bu: 2 },
-//       { link: 4, bu: 2 }
-//     ]
-//   },
-//   {
-//     serviceClass: 3,
-//     incomingLoad_a: 1,
-//     route: [
-//       { link: 1, bu: 3 },
-//       { link: 2, bu: 3 },
-//       { link: 3, bu: 3 },
-//       { link: 4, bu: 2 }
-//     ]
-//   }
-// ];
-
-// console.log(callBlockingProbabilityinRLA(links, serviceClasses));
+ console.log(callBlockingProbabilityinRLA(links, serviceClasses));

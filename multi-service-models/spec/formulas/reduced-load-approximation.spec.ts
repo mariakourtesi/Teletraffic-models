@@ -191,7 +191,7 @@ describe('Reduced Load Approximation', () => {
     },
     {
       description:
-        '4 links and 1 service class, service class 2 requires different bu from each link',
+        '4 links and 1 service class, 1 service class requires same 1 bu from each link',
       links: [
         { link: 1, capacity: 5 },
         { link: 2, capacity: 5 },
@@ -210,7 +210,30 @@ describe('Reduced Load Approximation', () => {
           ]
         }
       ],
-      expected: { B1: 0.10759 }
+      expected: { B1: 0.10759 } // RLA gives different blocking probability compared to LAR and Kaufman-Roberts model
+    },
+    {
+      description:
+        '4 links and 1 service class, 1 service class requires same 1 bu from each link',
+      links: [
+        { link: 1, capacity: 5 },
+        { link: 2, capacity: 5 },
+        { link: 3, capacity: 5 },
+        { link: 4, capacity: 5 }
+      ],
+      serviceClasses: [
+        {
+          serviceClass: 1,
+          incomingLoad_a: 2,
+          route: [
+            { link: 1, bu: 2 },
+            { link: 2, bu: 2 },
+            { link: 3, bu: 2 },
+            { link: 4, bu: 2 }
+          ]
+        }
+      ],
+      expected: { B1: 0.59651 } // RLA gives different blocking probability compared to LAR and Kaufman-Roberts model
     }
   ])(`When $description`, ({ links, serviceClasses, expected }) => {
     it('should calculate the CBP for each service class that traverses the link network topology', () => {
