@@ -131,5 +131,3 @@ export const callBlockingProbabilityinRLAForProposedModel = (
 
   return logs; 
 };
-
- console.log(callBlockingProbabilityinRLA(links, serviceClasses));
