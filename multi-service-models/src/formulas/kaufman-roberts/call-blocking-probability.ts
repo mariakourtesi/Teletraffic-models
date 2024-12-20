@@ -1,4 +1,4 @@
-import { ServiceClass, ServiceClassWithBR } from '../types';
+import { ServiceClass, ServiceClassWithBR } from '../../types';
 import { kaufmanRoberts } from './kaufman-roberts-formula';
 import { robertsFormulaBRPolicy } from './roberts-formula-br-policy';
 

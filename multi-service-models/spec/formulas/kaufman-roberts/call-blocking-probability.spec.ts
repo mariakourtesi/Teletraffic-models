@@ -1,4 +1,4 @@
-import { callBlockingProbability } from '../../src/formulas/call-blocking-probability';
+import { callBlockingProbability } from '../../../src/formulas/kaufman-roberts/call-blocking-probability';
 
 
 describe('Call Blocking probability with 1 service class - complete sharing policy', () => {

@@ -1,7 +1,7 @@
 import {
   kaufmanRoberts,
   unnormalisedKaufmanRobertsFormula
-} from '../../src/formulas/kaufman-roberts-formula';
+} from '../../../src/formulas/kaufman-roberts/kaufman-roberts-formula';
 
 describe('Kaufman Roberts Formulas', () => {
   describe.each([

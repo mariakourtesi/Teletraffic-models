@@ -2,7 +2,7 @@ import {
   linkUtilization_U,
   meanNumberOfCallsInSystem,
   meanNumberOfCallsInSystemInState_J
-} from '../../src/formulas/link-utilization';
+} from '../../../src/formulas/kaufman-roberts/link-utilization';
 describe('link-utilization', () => {
   const capacity = 5;
   const serviceClasses = [

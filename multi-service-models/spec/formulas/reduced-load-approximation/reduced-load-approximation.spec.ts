@@ -1,4 +1,4 @@
-import { callBlockingProbabilityinRLA } from '../../src/formulas/reduced-load-approximation';
+import { callBlockingProbabilityinRLA } from '../../../src/formulas/reduced-load-approximation/reduced-load-approximation';
 describe('Reduced Load Approximation', () => {
   describe.each([
     {

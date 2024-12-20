@@ -1,4 +1,4 @@
-import { numberOfDigitsAfterDecimal } from '../utils';
+import { numberOfDigitsAfterDecimal } from '../normalise-probabilities';
 import { calculateValidStates } from './valid-link-states-in-network-topology';
 
 //TODO: to revisit the tests and fix the formula

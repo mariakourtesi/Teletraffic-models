@@ -1,4 +1,4 @@
-import { robertsFormulaBRPolicy } from '../../src/formulas/roberts-formula-br-policy';
+import { robertsFormulaBRPolicy } from '../../../src/formulas/kaufman-roberts/roberts-formula-br-policy';
 
 describe('Erland Multirate Loss Model under BR policy = Roberts Formula', () => {
   describe.each([

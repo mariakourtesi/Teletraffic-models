@@ -1,5 +1,5 @@
 import { ServiceClass } from '../../types';
-import { calculateNormalizationConstant_G, numberOfDigitsAfterDecimal } from '../../utils';
+import { calculateNormalizationConstant_G, numberOfDigitsAfterDecimal } from '../../normalise-probabilities';
 import { unnormalisedLARModel } from './limited-available-resources-model';
 import { conditionalTransitionProbability } from '../../utils/conditional-transition-probability';
 

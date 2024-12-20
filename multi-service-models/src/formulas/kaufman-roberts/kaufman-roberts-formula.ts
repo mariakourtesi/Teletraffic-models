@@ -1,5 +1,5 @@
-import { ServiceClass } from '../types';
-import { normaliseProbabilityValues, numberOfDigitsAfterDecimal } from '../utils';
+import { ServiceClass } from '../../types';
+import { normaliseProbabilityValues, numberOfDigitsAfterDecimal } from '../../normalise-probabilities';
 
 const stateProbability_q = (j: number, serviceClasses: ServiceClass[]): number => {
   const results: number[] = [];

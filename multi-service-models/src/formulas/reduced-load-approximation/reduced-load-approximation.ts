@@ -1,5 +1,5 @@
-import { kaufmanRoberts } from './kaufman-roberts-formula';
-import { networkTopology, ServiceClassWithRoute } from '../types';
+import { kaufmanRoberts } from '../kaufman-roberts/kaufman-roberts-formula';
+import { networkTopology, ServiceClassWithRoute } from '../../types';
 
 const initializeResult = (
   key: string,
