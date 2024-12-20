@@ -43,6 +43,43 @@ describe('Call Blocking probability with 2 service classes - complete sharing po
   });
 });
 
+describe.each([
+  {
+    description: '1 service class, 1 bu',
+    capacity: 5,
+    serviceClasses: [
+      {
+        serviceClass: 1,
+        bu: 1,
+        incomingLoad_a: 2
+      },
+    ],
+    expected: {
+      B_class_1: '0.0366973',
+    }
+  },
+  {
+    description: '1 service classes, 2 bu',
+    capacity: 5,
+    serviceClasses: [
+      {
+        serviceClass: 1,
+        bu: 2,
+        incomingLoad_a: 2
+      }
+    ],
+    expected: {
+      B_class_1: '0.4000000'
+    }
+  },
+])('Call Blocking probability - complete sharing policy', ({ capacity, serviceClasses, expected }) => {
+  it('should calculate the CBP for the system', () => {
+    // should give the same results as the Limited availability model
+    const result = callBlockingProbability(capacity, serviceClasses);
+    expect(result).toEqual(expected);
+  });
+});
+
 describe('Call Blocking probability - bandwidth reservation policy', () => {
   const capacity = 5;
   const serviceClasses = [
