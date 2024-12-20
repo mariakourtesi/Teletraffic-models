@@ -9,19 +9,20 @@ These formulas are widely used in telecommunications and network engineering to 
 Each directory /formulas/* contains its own README with more information about each mathematical model.
 
 #### For the Kaufman-Roberts model
-`cd src/formulas/kaufman-roberts`
+[`cd src/formulas/kaufman-roberts`](src/formulas/kaufman-roberts)
 
 #### For the Dziong-Roberts model
-`cd src/formulas/dziong-roberts-model`
+[`cd src/formulas/dziong-roberts-model`](src/formulas/dziong-roberts-model)
 
 #### For the Reduced Load Approximation formula or knapsack approximation
 `cd src/formulas/reduced-load-approximation`
 
 #### For the Limited Available Resources Model
-`cd src/formulas/limited-available-resources-model`
+[`cd src/formulas/limited-available-resources-model`](src/formulas/limited-available-resources-model)
 
 #### For the IEEE proposed model
-`cd src/formulas/IEEE-proposed-model`
+[`cd src/formulas/IEEE-proposed-model`](src/formulas/IEEE-proposed-model)
+
 
 #### For utility functions
 1. binomial-distribution,
@@ -31,7 +32,7 @@ Each directory /formulas/* contains its own README with more information about e
 5. possible-arrangements
 6. conditional transition probability
 
-`cd src/formulas/utils`
+[`cd src/formulas/utils`](src/utils)
 
 #### For the Erlang-B model 
 `cd src/formulas/erlang`
