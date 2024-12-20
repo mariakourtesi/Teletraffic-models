@@ -1,7 +1,7 @@
-import { networkTopology, ServiceClassWithRoute } from '../../types';
-import { numberOfDigitsAfterDecimal } from '../../normalise-probabilities';
+import { networkTopology, ServiceClassWithRoute } from '../types';
+import { numberOfDigitsAfterDecimal } from '../normalise-probabilities';
 import { callBlockingProbability } from '../kaufman-roberts/call-blocking-probability';
-import {blockingProbabilityLAR} from '../lar-model/blocking-probability';
+import {blockingProbabilityLAR} from '../limited-available-resources-model/blocking-probability';
 import {  callBlockingProbabilityinRLAForProposedModel } from '../reduced-load-approximation/reduced-load-approximation';
 
 

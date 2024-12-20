@@ -1,5 +1,5 @@
-import { ServiceClassWithBR } from '../../types';
-import { numberOfDigitsAfterDecimal, normaliseProbabilityValues } from '../../normalise-probabilities';
+import { ServiceClassWithBR } from '../types';
+import { numberOfDigitsAfterDecimal, normaliseProbabilityValues } from '../normalise-probabilities';
 
 const stateProbablityWithBR_q = (
   j: number,

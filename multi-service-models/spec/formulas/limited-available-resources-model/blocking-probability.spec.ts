@@ -1,4 +1,4 @@
-import { blockingProbabilityLAR } from '../../../src/formulas/lar-model/blocking-probability';
+import { blockingProbabilityLAR } from '../../../src/formulas/limited-available-resources-model/blocking-probability';
 describe('blocking probability', () => {
   describe('LAR model blocking propability', () => {
 

@@ -1,5 +1,5 @@
-import { ServiceClass, ServiceClassWithBR } from '../../types';
-import { numberOfDigitsAfterDecimal } from '../../normalise-probabilities';
+import { ServiceClass, ServiceClassWithBR } from '../types';
+import { numberOfDigitsAfterDecimal } from '../normalise-probabilities';
 import { kaufmanRoberts } from './kaufman-roberts-formula';
 
 const calculateLinkUtilization = (capacity: number, serviceClasses: ServiceClass[]): number => {

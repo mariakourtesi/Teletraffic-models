@@ -1,4 +1,4 @@
-import { unnormalisedLARModel } from '../../../src/formulas/lar-model/limited-available-resources-model';
+import { unnormalisedLARModel } from '../../../src/formulas/limited-available-resources-model/limited-available-resources-model';
 
 describe('LimitedAvailableResourcesModel', () => {
   describe.each([

@@ -1,4 +1,4 @@
-import { normaliseProbabilityValues } from '../../src/normalise-probabilities';
+import { normaliseProbabilityValues } from '../../src/formulas/normalise-probabilities';
 
 describe('Normalise Probability Values', () => {
   describe.each([

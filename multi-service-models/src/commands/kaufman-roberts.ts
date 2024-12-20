@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { ServiceClass } from '../types';
+import { ServiceClass } from '../formulas/types';
 import { kaufmanRoberts } from '../formulas/kaufman-roberts-formula';
 
 export default () =>

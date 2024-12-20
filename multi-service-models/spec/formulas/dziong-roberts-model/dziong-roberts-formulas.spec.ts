@@ -1,4 +1,4 @@
-import { dziongRobertsFormula } from '../../src/formulas/dziong-roberts-formula';
+import { dziongRobertsFormula } from '../../../src/formulas/dziong-roberts-model/dziong-roberts-formula';
 interface ServiceClass {
   serviceClass: number;
   lambda: number; // Arrival rate (in Erlangs)
