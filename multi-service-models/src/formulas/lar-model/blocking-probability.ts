@@ -27,4 +27,3 @@ export const blockingProbabilityLAR = (
     });
     return result;
   }
-
