@@ -19,7 +19,7 @@ export const callBlockingProbability = (
 
   probabilityValues = robertsFormulaBRPolicy(capacity, serviceClasses as ServiceClassWithBR[]);
 
-  const result: { [key: string]: string } = {};
+  const result: { [key: string]: number } = {};
 
   serviceClasses.forEach((serviceClass, index) => {
     const requested_bu = serviceClass.bu;
@@ -31,7 +31,7 @@ export const callBlockingProbability = (
       cbp += q_j;
     }
 
-    result[`B_class_${index + 1}`] = `${(cbp).toFixed(7)}`;
+    result[`B_class_${index + 1}`] = parseFloat(cbp.toFixed(7));
   });
 
   return result;

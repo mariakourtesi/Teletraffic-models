@@ -14,7 +14,7 @@ describe('Call Blocking probability with 1 service class - complete sharing poli
   it('should calculate the CBP for the system', () => {
     const result = callBlockingProbability(capacity, serviceClasses);
     expect(result).toEqual({
-      B_class_1: '0.0000001'
+      B_class_1: 0.0000001
     });
   });
 });
@@ -37,8 +37,8 @@ describe('Call Blocking probability with 2 service classes - complete sharing po
   it('should calculate the CBP for the system', () => {
     const result = callBlockingProbability(capacity, serviceClasses);
     expect(result).toEqual({
-      B_class_1: '0.1721854',
-      B_class_2: '0.3818984'
+      B_class_1: 0.1721854,
+      B_class_2: 0.3818984
     });
   });
 });
@@ -55,7 +55,7 @@ describe.each([
       },
     ],
     expected: {
-      B_class_1: '0.0366973',
+      B_class_1: 0.0366973,
     }
   },
   {
@@ -69,7 +69,7 @@ describe.each([
       }
     ],
     expected: {
-      B_class_1: '0.4000000'
+      B_class_1: 0.4000000
     }
   },
 ])('Call Blocking probability - complete sharing policy', ({ capacity, serviceClasses, expected }) => {
@@ -100,8 +100,8 @@ describe('Call Blocking probability - bandwidth reservation policy', () => {
   it('should calculate the CBP for the system', () => {
     const result = callBlockingProbability(capacity, serviceClasses);
     expect(result).toEqual({
-      B_class_1: '0.3253012',
-      B_class_2: '0.3253012'
+      B_class_1: 0.3253012,
+      B_class_2: 0.3253012
     });
   });
 });

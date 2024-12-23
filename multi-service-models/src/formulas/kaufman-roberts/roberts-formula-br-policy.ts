@@ -35,7 +35,6 @@ const stateProbablityWithBR_q = (
   return result;
 };
 
-console.log(stateProbablityWithBR_q(3, [{ serviceClass: 1, bu: 1, incomingLoad_a: 2, tk: 1 }, {serviceClass: 2, bu:2, incomingLoad_a:1, tk:0}], 4));
 
 export const robertsFormulaBRPolicy = (capacity: number, serviceClasses: ServiceClassWithBR[]) => {
   if (serviceClasses.length === 0) return {};
