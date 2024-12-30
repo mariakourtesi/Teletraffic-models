@@ -9,7 +9,7 @@ describe('blocking probability', () => {
         individualResourceCapacity: 5,
         serviceClasses: [{ serviceClass: 1, bu: 1, incomingLoad_a: 1 }],
         expectedBlocking: {
-          E_class_1: 0.0000001
+          B_class_1: 0.0000001
         }
       },
       {
@@ -18,7 +18,7 @@ describe('blocking probability', () => {
         individualResourceCapacity: 5,
         serviceClasses: [{ serviceClass: 1, bu: 2, incomingLoad_a: 1 }],
         expectedBlocking: {
-          E_class_1: 0.0071648
+          B_class_1: 0.0071648
         } 
       },
       {
@@ -27,8 +27,8 @@ describe('blocking probability', () => {
         individualResourceCapacity: 5,
         serviceClasses: [{ serviceClass: 1, bu: 1, incomingLoad_a: 1 }, { serviceClass: 2, bu: 2, incomingLoad_a: 1 }],
         expectedBlocking: {
-          E_class_1: 0.0036756,
-          E_class_2: 0.0203967
+          B_class_1: 0.0036756,
+          B_class_2: 0.0203967
         }  
       },
       {
@@ -37,7 +37,7 @@ describe('blocking probability', () => {
         individualResourceCapacity: 5,
         serviceClasses: [{ serviceClass: 1, bu:1, incomingLoad_a: 2 }],
         expectedBlocking: {
-          E_class_1: 0.0366972
+          B_class_1: 0.0366972
         }  
       },
       {
@@ -46,7 +46,7 @@ describe('blocking probability', () => {
         individualResourceCapacity: 5,
         serviceClasses: [{ serviceClass: 1, bu:2, incomingLoad_a: 2 }],
         expectedBlocking: {
-          E_class_1: 0.4000000
+          B_class_1: 0.4000000
         }  
       }
     ])('when $description', ({distinctResourceCount, individualResourceCapacity, serviceClasses, expectedBlocking}) => {
