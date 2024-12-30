@@ -2,6 +2,7 @@ import { ServiceClass } from '../types';
 import { calculateNormalizationConstant_G, numberOfDigitsAfterDecimal } from '../normalise-probabilities';
 import { unnormalisedLARModel } from './limited-available-resources-model';
 import { conditionalTransitionProbability } from '../../utils/conditional-transition-probability';
+import { parse } from 'url';
 
 
 export const blockingProbabilityLAR = (
@@ -10,7 +11,7 @@ export const blockingProbabilityLAR = (
     serviceClasses: ServiceClass[]) => {
     const probabilities = unnormalisedLARModel(distinctResourceCount, individualResourceCapacity, serviceClasses);
     const normalisationConstant = calculateNormalizationConstant_G(probabilities);
-    const result: { [key: string]: string } = {};
+    const result: { [key: string]: number } = {};
 
     serviceClasses.forEach((serviceClass, index) => {
       const { bu } = serviceClass;
@@ -23,7 +24,7 @@ export const blockingProbabilityLAR = (
            const p_n = probabilities[n] || 0;
         cbp += p_n*(1 - conditionalTransitionProbability(n, bu, distinctResourceCount, individualResourceCapacity));
        }
-       result[`E_class_${index + 1}`] = `${(cbp/normalisationConstant).toFixed(numberOfDigitsAfterDecimal)}`;
+       result[`E_class_${index + 1}`] = parseFloat((cbp/normalisationConstant).toFixed(numberOfDigitsAfterDecimal));
     });
     return result;
   }
