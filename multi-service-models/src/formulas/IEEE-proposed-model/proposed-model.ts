@@ -3,31 +3,14 @@ import { numberOfDigitsAfterDecimal } from '../normalise-probabilities';
 import { callBlockingProbability } from '../kaufman-roberts/call-blocking-probability';
 import {blockingProbabilityLAR} from '../limited-available-resources-model/blocking-probability';
 import {  callBlockingProbabilityinRLAForProposedModel } from '../reduced-load-approximation/reduced-load-approximation';
+import { BlockingRatios, Capacities, ServiceClassConfigs } from './types';
 
-
-interface ServiceClass {
-  serviceClass: number;
-  incomingLoad_a: number;
-  bu: number;
-}
-
-interface Capacities {
-  ramCapacity: number;
-  processorCapacity: number;
-  diskCapacity: number;
-  bpsCapacity: number;
-}
-
-interface ServiceClassConfigs {
-  serviceClasses: ServiceClass[];
-  serviceClassesBitrate: ServiceClass[];
-}
 
 // Step 1: Calculate the blocking probabilities for each subsystem using the Kaufman-Roberts model
 export const calculateSubsystemBlockingKaufmanRoberts = (
   capacities: Capacities,
   serviceClassConfigs: ServiceClassConfigs
-)  => {
+): BlockingRatios => {
   const { ramCapacity, processorCapacity, diskCapacity, bpsCapacity } = capacities;
 
   const { serviceClasses, serviceClassesBitrate } = serviceClassConfigs;
@@ -35,7 +18,7 @@ export const calculateSubsystemBlockingKaufmanRoberts = (
   const ramSubsystem = callBlockingProbability(ramCapacity, serviceClasses);
   const processorSubsystem = callBlockingProbability(processorCapacity, serviceClasses);
   const diskSubsystem = callBlockingProbability(diskCapacity, serviceClasses);
-  const bitrateSubsystem = callBlockingProbability(bpsCapacity, serviceClassesBitrate);
+  const bitrateSubsystem = callBlockingProbability(bpsCapacity, serviceClassesBitrate ?? serviceClasses);
 
   return {
     RAM: ramSubsystem,
@@ -45,11 +28,11 @@ export const calculateSubsystemBlockingKaufmanRoberts = (
   };
 };
 
-// Step 2: Calculate the blocking probabilities using the Limited Available Resources modelb(LAR)
+// Step 2: Calculate the blocking probabilities using the Limited Available Resources model (LAR)
 export const calculateBlockingLAR = (
   resourcesCount: number,
   capacities: Capacities,
-  serviceClassConfigs: ServiceClassConfigs) => {
+  serviceClassConfigs: ServiceClassConfigs): BlockingRatios  => {
 
   const { ramCapacity, processorCapacity, diskCapacity, bpsCapacity } = capacities;
   const { serviceClasses, serviceClassesBitrate } = serviceClassConfigs;
@@ -57,7 +40,7 @@ export const calculateBlockingLAR = (
   const ramSubsystem = blockingProbabilityLAR(resourcesCount, ramCapacity, serviceClasses);
   const processorSubsystem = blockingProbabilityLAR(resourcesCount, processorCapacity, serviceClasses);
   const diskSubsystem = blockingProbabilityLAR(resourcesCount, diskCapacity, serviceClasses);
-  const bitrateSubsystem = blockingProbabilityLAR(resourcesCount, bpsCapacity, serviceClassesBitrate);
+  const bitrateSubsystem = blockingProbabilityLAR(resourcesCount, bpsCapacity, serviceClassesBitrate ?? serviceClasses);
 
   return {
     RAM: ramSubsystem,
@@ -70,36 +53,27 @@ export const calculateBlockingLAR = (
 
 
 // Step 3: Calculate the relation R between the blocking probabilities of the Kaufman-Roberts model and the LAR model
-type BlockingRatios = { [key: string]: { [key: string]: string } };
-
 export const calculateBlockingRatios = (
   kaufmanRoberts: BlockingRatios,
   lar: BlockingRatios
 ): BlockingRatios => {
-  const result: BlockingRatios = {};
+  const result: BlockingRatios = { RAM: {}, Processor: {}, Disk: {}, Bps: {} };
 
   for (const subsystem in kaufmanRoberts) {
     if (kaufmanRoberts.hasOwnProperty(subsystem) && lar.hasOwnProperty(subsystem)) {
-      const krValues = kaufmanRoberts[subsystem];
-      const larValues = lar[subsystem];
+      const krValues = kaufmanRoberts[subsystem as keyof BlockingRatios];
+      const larValues = lar[subsystem as keyof BlockingRatios];
 
-      result[subsystem] = {};
+      result[subsystem as keyof BlockingRatios] = {};
 
-      // Iterate through classes (B_class_1)
       for (const className in krValues) {
         if (krValues.hasOwnProperty(className)) {
-          const krValue = parseFloat(krValues[className]); 
-          const larKey = className.replace('B_class_', 'E_class_'); 
-          const larValue = parseFloat(larValues[larKey]);
+          const krValue = krValues[className];
+          const larValue = larValues[className];
 
-          
-          if (!isNaN(krValue) && !isNaN(larValue)) {
-            result[subsystem][className] = larValue !== 0 
-              ? ( larValue/ krValue ).toFixed(numberOfDigitsAfterDecimal) 
-              : 'Infinity';
-          } else {
-            result[subsystem][className] = 'NaN';
-          }
+          result[subsystem as keyof BlockingRatios][className] = !isNaN(krValue) && !isNaN(larValue)
+            ? parseFloat((larValue / krValue).toFixed(numberOfDigitsAfterDecimal))
+            : NaN;
         }
       }
     }
@@ -110,7 +84,7 @@ export const calculateBlockingRatios = (
 
 // Step 4: Apply the RLA model to calculate the blocking probability
 
-const enum Subsystem {
+enum Subsystem {
   'link1' = 'RAM',
   'link2' = 'Processor',
   'link3' = 'Disk',
@@ -122,43 +96,26 @@ export const processResultInRLA = (
   serviceClasses: ServiceClassWithRoute[]
 ): BlockingRatios => {
   const rla = callBlockingProbabilityinRLAForProposedModel(links, serviceClasses);
-  const result = {
-    RAM: {} as { [key: string]: string },
-    Processor: {} as { [key: string]: string },
-    Disk: {} as { [key: string]: string },
-    Bps: {} as { [key: string]: string },
-  };
+  
+  const result: BlockingRatios = { RAM: {}, Processor: {}, Disk: {}, Bps: {} };
 
-  rla.forEach((entry) => {
-    const [key, value] = entry.split(':').map((str) => str.trim());
+ for (const key in rla) {
+    const value = rla[key];
 
-    // Determine the subsystem and class
-    let subsystem: keyof typeof result;
-    if (key.startsWith('V_link1')) {
-      subsystem = 'RAM';
-    } else if (key.startsWith('V_link2')) {
-      subsystem = 'Processor';
-    } else if (key.startsWith('V_link3')) {
-      subsystem = 'Disk';
-    } else if (key.startsWith('V_link4')) {
-      subsystem = 'Bps';
-    } else {
-      return; 
-    }
-
+    const subsystem = Subsystem[key.match(/V_(link\d)/)?.[1] as keyof typeof Subsystem];
+    console.log(subsystem);
   
     const classMatch = key.match(/class_(\d+)/);
     if (classMatch) {
       const classKey = `B_class_${classMatch[1]}`; // Format as "B_class_X"
-      result[subsystem][classKey] = value; // Assign the value as a string
+      result[subsystem][classKey] = (value); 
     }
-  });
+ };
 
   return result;
 };
 
 // Step 5: Determine the blocking probabilities in the cloud for each service class
-
 export const calculateEi = (
   relationR: BlockingRatios,
   reducedLoadApproximation: BlockingRatios
@@ -166,14 +123,13 @@ export const calculateEi = (
   const subsystems = ['RAM', 'Processor', 'Disk', 'Bps'] as const;
   const result: { [key: string]: number } = {};
 
-  // Assume all classes are the same across subsystems
   const classes = Object.keys(relationR.RAM);
 
   classes.forEach((classKey) => {
     // Multiply values for each subsystem and class
     const multiplications = subsystems.map((subsystem) => {
-      const relRValue = parseFloat(relationR[subsystem][classKey]);
-      const rlaValue = parseFloat(reducedLoadApproximation[subsystem][classKey]);
+      const relRValue = relationR[subsystem][classKey];
+      const rlaValue = reducedLoadApproximation[subsystem][classKey];
       return relRValue * rlaValue; 
     });
 
@@ -186,136 +142,6 @@ export const calculateEi = (
 };
 
 
-// data for testing
-const capacities: Capacities = {
-  ramCapacity: 10,
-  processorCapacity: 12,
-  diskCapacity: 11,
-  bpsCapacity: 10
-};
 
-const serviceClassConfigsKaufmanRoberts: ServiceClassConfigs = {
-  serviceClasses: [
-    {
-      serviceClass: 1,
-      incomingLoad_a: 3,
-      bu: 1
-    },
-    {
-      serviceClass: 2,
-      incomingLoad_a: 1.5,
-      bu: 2
-    },
-    {
-      serviceClass: 3,
-      incomingLoad_a: 1,
-      bu: 3
-    }
-  ],
-  serviceClassesBitrate: [
-    {
-      serviceClass: 1,
-      incomingLoad_a: 3,
-      bu: 2
-    },
-    {
-      serviceClass: 2,
-      incomingLoad_a: 1.5,
-      bu: 2
-    },
-    {
-      serviceClass: 3,
-      incomingLoad_a: 1,
-      bu: 2
-    }
-  ]
-};
-
-const serviceClassConfigsLAR: ServiceClassConfigs = {
-  serviceClasses: [
-    {
-      serviceClass: 1,
-      incomingLoad_a: 9,
-      bu: 1
-    },
-    {
-      serviceClass: 2,
-      incomingLoad_a: 4.5,
-      bu: 2
-    },
-    {
-      serviceClass: 3,
-      incomingLoad_a: 3,
-      bu: 3
-    }
-  ],
-  serviceClassesBitrate: [
-    {
-      serviceClass: 1,
-      incomingLoad_a: 9,
-      bu: 2
-    },
-    {
-      serviceClass: 2,
-      incomingLoad_a: 4.5,
-      bu: 2
-    },
-    {
-      serviceClass: 3,
-      incomingLoad_a: 3,
-      bu: 2
-    }
-  ]
-};
-
-
-const links = [
-  { link: 1, capacity: 10 },
-  { link: 2, capacity: 12 },
-  { link: 3, capacity: 11 },
-  { link: 4, capacity: 10 }
-];
-
-const serviceClasses = [
-  {
-    serviceClass: 1,
-    incomingLoad_a: 3,
-    route: [
-      { link: 1, bu: 1 },
-      { link: 2, bu: 1 },
-      { link: 3, bu: 1 },
-      { link: 4, bu: 2 }
-    ]
-  },
-  {
-    serviceClass: 2,
-    incomingLoad_a: 1.5,
-    route: [
-      { link: 1, bu: 2 },
-      { link: 2, bu: 2 },
-      { link: 3, bu: 2 },
-      { link: 4, bu: 2 }
-    ]
-  },
-  {
-    serviceClass: 3,
-    incomingLoad_a: 1,
-    route: [
-      { link: 1, bu: 3 },
-      { link: 2, bu: 3 },
-      { link: 3, bu: 3 },
-      { link: 4, bu: 2 }
-    ]
-  }
-];
-
-
-
-const kaufmanRoberts = calculateSubsystemBlockingKaufmanRoberts(capacities, serviceClassConfigsKaufmanRoberts);
-const lar = calculateBlockingLAR(3, capacities, serviceClassConfigsLAR);
-const relationR = calculateBlockingRatios(kaufmanRoberts, lar);
-const reducedLoadApproximation = processResultInRLA(links, serviceClasses);
-
-console.log('Ei:', calculateEi(relationR, reducedLoadApproximation));
 
 

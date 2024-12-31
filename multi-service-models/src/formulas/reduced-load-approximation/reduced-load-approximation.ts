@@ -115,17 +115,16 @@ export const callBlockingProbabilityinRLA = (
 export const callBlockingProbabilityinRLAForProposedModel = (
   links: networkTopology[],
   serviceClasses: ServiceClassWithRoute[]
-): string[] => {
+): { [key: string]: number } => {
   const blockingProbabilities = calculateBlockingWithReducedTrafficLoad(links, serviceClasses);
-  const logs: string[] = []; 
+  const logs:{ [key: string]: number } = {}; 
 
   serviceClasses.forEach((sc) => {
     const { serviceClass, route } = sc;
     route.forEach((link) => {
       const key = `V_link${link.link}_class_${serviceClass}`;
       const value = blockingProbabilities[key];
-      const logEntry = `${key}: ${value}`; 
-      logs.push(logEntry); 
+      logs[key] = value; 
     });
   });
 
