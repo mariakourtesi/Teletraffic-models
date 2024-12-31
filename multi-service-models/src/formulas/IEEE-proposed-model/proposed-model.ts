@@ -103,8 +103,6 @@ export const processResultInRLA = (
     const value = rla[key];
 
     const subsystem = Subsystem[key.match(/V_(link\d)/)?.[1] as keyof typeof Subsystem];
-    console.log(subsystem);
-  
     const classMatch = key.match(/class_(\d+)/);
     if (classMatch) {
       const classKey = `B_class_${classMatch[1]}`; // Format as "B_class_X"
