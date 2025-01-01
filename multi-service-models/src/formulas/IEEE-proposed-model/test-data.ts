@@ -3,12 +3,7 @@
 import { calculateBlockingLAR, calculateBlockingRatios, calculateEi, calculateSubsystemBlockingKaufmanRoberts, processResultInRLA } from './proposed-model';
 import { Capacities, ServiceClassConfigs } from './types';
 
-const capacities: Capacities = {
-  ramCapacity: 10,
-  processorCapacity: 12,
-  diskCapacity: 11,
-  bpsCapacity: 10
-};
+
 
 const serviceClassConfigsKaufmanRoberts: ServiceClassConfigs = {
   serviceClasses: [
@@ -85,12 +80,7 @@ const serviceClassConfigsLAR: ServiceClassConfigs = {
 };
 
 
-const links = [
-  { link: 1, capacity: 10 },
-  { link: 2, capacity: 12 },
-  { link: 3, capacity: 11 },
-  { link: 4, capacity: 10 }
-];
+
 
 const serviceClasses = [
   {
@@ -125,10 +115,18 @@ const serviceClasses = [
   }
 ];
 
+const capacities:Capacities = {
+  ramCapacity: { link: 1, capacity: 10 },
+  processorCapacity: { link: 2, capacity: 12 },
+  diskCapacity: { link: 3, capacity: 11 },
+  bpsCapacity: { link: 4, capacity: 10 }
+};
 
+const resourceCount = 3;
 
 const kaufmanRoberts = calculateSubsystemBlockingKaufmanRoberts(capacities, serviceClassConfigsKaufmanRoberts);
-const lar = calculateBlockingLAR(3, capacities, serviceClassConfigsLAR);
+const lar = calculateBlockingLAR(resourceCount, capacities, serviceClassConfigsLAR);
 const relationR = calculateBlockingRatios(kaufmanRoberts, lar);
-const reducedLoadApproximation = processResultInRLA(links, serviceClasses);
+const reducedLoadApproximation = processResultInRLA(capacities, serviceClasses);
 const Ei = calculateEi(relationR, reducedLoadApproximation);
+console.log(Ei);

@@ -1,10 +1,9 @@
 import { networkTopology, ServiceClassWithRoute } from '../types';
 import { numberOfDigitsAfterDecimal } from '../normalise-probabilities';
 import { callBlockingProbability } from '../kaufman-roberts/call-blocking-probability';
-import {blockingProbabilityLAR} from '../limited-available-resources-model/blocking-probability';
-import {  callBlockingProbabilityinRLAForProposedModel } from '../reduced-load-approximation/reduced-load-approximation';
+import { blockingProbabilityLAR } from '../limited-available-resources-model/blocking-probability';
+import { callBlockingProbabilityinRLAForProposedModel } from '../reduced-load-approximation/reduced-load-approximation';
 import { BlockingRatios, Capacities, ServiceClassConfigs } from './types';
-
 
 // Step 1: Calculate the blocking probabilities for each subsystem using the Kaufman-Roberts model
 export const calculateSubsystemBlockingKaufmanRoberts = (
@@ -15,32 +14,13 @@ export const calculateSubsystemBlockingKaufmanRoberts = (
 
   const { serviceClasses, serviceClassesBitrate } = serviceClassConfigs;
 
-  const ramSubsystem = callBlockingProbability(ramCapacity, serviceClasses);
-  const processorSubsystem = callBlockingProbability(processorCapacity, serviceClasses);
-  const diskSubsystem = callBlockingProbability(diskCapacity, serviceClasses);
-  const bitrateSubsystem = callBlockingProbability(bpsCapacity, serviceClassesBitrate ?? serviceClasses);
-
-  return {
-    RAM: ramSubsystem,
-    Processor: processorSubsystem, 
-    Disk: diskSubsystem,
-    Bps: bitrateSubsystem
-  };
-};
-
-// Step 2: Calculate the blocking probabilities using the Limited Available Resources model (LAR)
-export const calculateBlockingLAR = (
-  resourcesCount: number,
-  capacities: Capacities,
-  serviceClassConfigs: ServiceClassConfigs): BlockingRatios  => {
-
-  const { ramCapacity, processorCapacity, diskCapacity, bpsCapacity } = capacities;
-  const { serviceClasses, serviceClassesBitrate } = serviceClassConfigs;
-
-  const ramSubsystem = blockingProbabilityLAR(resourcesCount, ramCapacity, serviceClasses);
-  const processorSubsystem = blockingProbabilityLAR(resourcesCount, processorCapacity, serviceClasses);
-  const diskSubsystem = blockingProbabilityLAR(resourcesCount, diskCapacity, serviceClasses);
-  const bitrateSubsystem = blockingProbabilityLAR(resourcesCount, bpsCapacity, serviceClassesBitrate ?? serviceClasses);
+  const ramSubsystem = callBlockingProbability(ramCapacity.capacity, serviceClasses);
+  const processorSubsystem = callBlockingProbability(processorCapacity.capacity, serviceClasses);
+  const diskSubsystem = callBlockingProbability(diskCapacity.capacity, serviceClasses);
+  const bitrateSubsystem = callBlockingProbability(
+    bpsCapacity.capacity,
+    serviceClassesBitrate ?? serviceClasses
+  );
 
   return {
     RAM: ramSubsystem,
@@ -50,7 +30,39 @@ export const calculateBlockingLAR = (
   };
 };
 
+// Step 2: Calculate the blocking probabilities using the Limited Available Resources model (LAR)
+export const calculateBlockingLAR = (
+  resourcesCount: number,
+  capacities: Capacities,
+  serviceClassConfigs: ServiceClassConfigs
+): BlockingRatios => {
+  const { ramCapacity, processorCapacity, diskCapacity, bpsCapacity } = capacities;
+  const { serviceClasses, serviceClassesBitrate } = serviceClassConfigs;
 
+  const ramSubsystem = blockingProbabilityLAR(resourcesCount, ramCapacity.capacity, serviceClasses);
+  const processorSubsystem = blockingProbabilityLAR(
+    resourcesCount,
+    processorCapacity.capacity,
+    serviceClasses
+  );
+  const diskSubsystem = blockingProbabilityLAR(
+    resourcesCount,
+    diskCapacity.capacity,
+    serviceClasses
+  );
+  const bitrateSubsystem = blockingProbabilityLAR(
+    resourcesCount,
+    bpsCapacity.capacity,
+    serviceClassesBitrate ?? serviceClasses
+  );
+
+  return {
+    RAM: ramSubsystem,
+    Processor: processorSubsystem,
+    Disk: diskSubsystem,
+    Bps: bitrateSubsystem
+  };
+};
 
 // Step 3: Calculate the relation R between the blocking probabilities of the Kaufman-Roberts model and the LAR model
 export const calculateBlockingRatios = (
@@ -71,9 +83,10 @@ export const calculateBlockingRatios = (
           const krValue = krValues[className];
           const larValue = larValues[className];
 
-          result[subsystem as keyof BlockingRatios][className] = !isNaN(krValue) && !isNaN(larValue)
-            ? parseFloat((larValue / krValue).toFixed(numberOfDigitsAfterDecimal))
-            : NaN;
+          result[subsystem as keyof BlockingRatios][className] =
+            !isNaN(krValue) && !isNaN(larValue)
+              ? parseFloat((larValue / krValue).toFixed(numberOfDigitsAfterDecimal))
+              : NaN;
         }
       }
     }
@@ -92,23 +105,24 @@ enum Subsystem {
 }
 
 export const processResultInRLA = (
-  links: networkTopology[],
+  capacities: Capacities,
   serviceClasses: ServiceClassWithRoute[]
 ): BlockingRatios => {
+  const links = Object.values(capacities);
   const rla = callBlockingProbabilityinRLAForProposedModel(links, serviceClasses);
-  
+
   const result: BlockingRatios = { RAM: {}, Processor: {}, Disk: {}, Bps: {} };
 
- for (const key in rla) {
+  for (const key in rla) {
     const value = rla[key];
 
     const subsystem = Subsystem[key.match(/V_(link\d)/)?.[1] as keyof typeof Subsystem];
     const classMatch = key.match(/class_(\d+)/);
     if (classMatch) {
       const classKey = `B_class_${classMatch[1]}`; // Format as "B_class_X"
-      result[subsystem][classKey] = (value); 
+      result[subsystem][classKey] = value;
     }
- };
+  }
 
   return result;
 };
@@ -121,6 +135,10 @@ export const calculateEi = (
   const subsystems = ['RAM', 'Processor', 'Disk', 'Bps'] as const;
   const result: { [key: string]: number } = {};
 
+  if (relationR.RAM === undefined) {
+    throw new Error('relationR.RAM is undefined');
+  }
+
   const classes = Object.keys(relationR.RAM);
 
   classes.forEach((classKey) => {
@@ -128,18 +146,13 @@ export const calculateEi = (
     const multiplications = subsystems.map((subsystem) => {
       const relRValue = relationR[subsystem][classKey];
       const rlaValue = reducedLoadApproximation[subsystem][classKey];
-      return relRValue * rlaValue; 
+      return relRValue * rlaValue;
     });
 
     // Calculate Ei for this class
     const Ei = 1 - multiplications.reduce((product, value) => product * (1 - value), 1);
-    result[classKey] = +Ei.toFixed(numberOfDigitsAfterDecimal); 
+    result[classKey] = +Ei.toFixed(numberOfDigitsAfterDecimal);
   });
 
   return result;
 };
-
-
-
-
-

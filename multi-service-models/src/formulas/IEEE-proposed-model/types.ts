@@ -3,12 +3,13 @@ export interface ServiceClass {
   incomingLoad_a: number;
   bu: number;
 }
+export interface KeyedValues { [key: string]: number };
 
 export interface Capacities {
-  ramCapacity: number;
-  processorCapacity: number;
-  diskCapacity: number;
-  bpsCapacity: number;
+  ramCapacity: KeyedValues;
+  processorCapacity: KeyedValues;
+  diskCapacity: KeyedValues;
+  bpsCapacity: KeyedValues;
 }
 
 export interface ServiceClassConfigs {
@@ -16,10 +17,10 @@ export interface ServiceClassConfigs {
   serviceClassesBitrate?: ServiceClass[];
 }
 
-export interface BlockingProbability { [key: string]: number };
+
 export interface BlockingRatios { 
-  RAM:  BlockingProbability,
-  Processor:  BlockingProbability,
-  Disk:  BlockingProbability,
-  Bps:  BlockingProbability };
+  RAM:  KeyedValues,
+  Processor:  KeyedValues,
+  Disk:  KeyedValues,
+  Bps:  KeyedValues };
 
