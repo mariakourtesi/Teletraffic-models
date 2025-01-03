@@ -1,5 +1,6 @@
 import { ServiceClassWithBR } from '../types';
-import { numberOfDigitsAfterDecimal, normaliseProbabilityValues } from '../normalise-probabilities';
+import { normaliseProbabilityValues } from '../normalise-probabilities';
+import { numberOfDigitsAfterDecimal } from '../../constants';
 
 const stateProbablityWithBR_q = (
   j: number,
@@ -34,7 +35,6 @@ const stateProbablityWithBR_q = (
 
   return result;
 };
-
 
 export const robertsFormulaBRPolicy = (capacity: number, serviceClasses: ServiceClassWithBR[]) => {
   if (serviceClasses.length === 0) return {};

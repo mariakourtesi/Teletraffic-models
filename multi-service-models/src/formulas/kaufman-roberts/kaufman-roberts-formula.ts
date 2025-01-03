@@ -1,5 +1,6 @@
 import { ServiceClass } from '../types';
-import { normaliseProbabilityValues, numberOfDigitsAfterDecimal } from '../normalise-probabilities';
+import { normaliseProbabilityValues } from '../normalise-probabilities';
+import { numberOfDigitsAfterDecimal } from '../../constants';
 
 const stateProbability_q = (j: number, serviceClasses: ServiceClass[]): number => {
   const results: number[] = [];
@@ -43,8 +44,7 @@ export const unnormalisedKaufmanRobertsFormula = (
 
   calculateStateProbabilities(0);
   return results;
-  }
-
+};
 
 export const kaufmanRoberts = (capacity: number, serviceClasses: ServiceClass[]) => {
   const probabilities = unnormalisedKaufmanRobertsFormula(capacity, serviceClasses);
@@ -57,4 +57,3 @@ export const kaufmanRoberts = (capacity: number, serviceClasses: ServiceClass[])
 
   return result;
 };
-

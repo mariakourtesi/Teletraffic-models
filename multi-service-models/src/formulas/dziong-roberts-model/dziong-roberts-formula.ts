@@ -1,4 +1,4 @@
-import { numberOfDigitsAfterDecimal } from '../normalise-probabilities';
+import { numberOfDigitsAfterDecimal } from '../../constants';
 import { calculateValidStates } from './valid-link-states-in-network-topology';
 
 //TODO: to revisit the tests and fix the formula
@@ -51,28 +51,21 @@ export const stateProbabilityNetworkTopology = (
 
       const newTopology = [...topology];
       newTopology[index] -= bandwidth;
-    
+
       if (newTopology[index] >= 0) {
+        const recursedProbabilities = stateProbabilityNetworkTopology(
+          newTopology,
+          serviceClasses,
+          stateProbabilities,
+          validLinkStates
+        );
+        const recursedKey = `q(${newTopology.join(',')})`;
 
-      const recursedProbabilities = stateProbabilityNetworkTopology(
-        newTopology,
-        serviceClasses,
-        stateProbabilities,
-        validLinkStates
-      );
-      const recursedKey = `q(${newTopology.join(',')})`;
-
-
-  
-     
         const recursedProbability = recursedProbabilities[recursedKey];
 
         sum += incomingLoad_a * bandwidth * recursedProbability;
-
-
-  
+      }
     }
-  }
 
     if (jl > 0) {
       const result = (1 / jl) * sum;
@@ -83,28 +76,30 @@ export const stateProbabilityNetworkTopology = (
   return stateProbabilities;
 };
 
-const findValidKeys = (stateValues: { [key: string]: number }, validStates: number[][]): { [key: string]: number } => {
+const findValidKeys = (
+  stateValues: { [key: string]: number },
+  validStates: number[][]
+): { [key: string]: number } => {
   const validKeys: { [key: string]: number } = {};
 
   for (const key in stateValues) {
-
     const matches = key.match(/\d+/g);
     if (matches) {
-      const arrayKey = matches.map(Number); 
+      const arrayKey = matches.map(Number);
 
-  
-      const existsInValidStates = validStates.some(validState => 
-        validState.length === arrayKey.length && validState.every((val, index) => val === arrayKey[index])
+      const existsInValidStates = validStates.some(
+        (validState) =>
+          validState.length === arrayKey.length &&
+          validState.every((val, index) => val === arrayKey[index])
       );
 
-
       if (existsInValidStates) {
-        validKeys[key] = stateValues[key]; 
+        validKeys[key] = stateValues[key];
       }
     }
   }
-  
-  return validKeys; 
+
+  return validKeys;
 };
 
 export const dziongRobertsFormula = (
@@ -133,7 +128,7 @@ export const dziongRobertsFormula = (
     validLinkStates
   );
 
-  const validStatesinLink = findValidKeys(stateProbabilities, validLinkStates)
+  const validStatesinLink = findValidKeys(stateProbabilities, validLinkStates);
   return validStatesinLink;
 };
 

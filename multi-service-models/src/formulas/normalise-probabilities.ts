@@ -1,4 +1,4 @@
-export const numberOfDigitsAfterDecimal = 7;
+import { numberOfDigitsAfterDecimal } from '../constants';
 
 export const calculateNormalizationConstant_G = (unormalizedProbabilities: number[]): number => {
   if (unormalizedProbabilities.length === 0) return 0;
