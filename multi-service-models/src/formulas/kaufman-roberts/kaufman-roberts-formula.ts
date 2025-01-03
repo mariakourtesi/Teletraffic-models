@@ -3,46 +3,46 @@ import { normaliseProbabilityValues } from '../normalise-probabilities';
 import { numberOfDigitsAfterDecimal } from '../../constants';
 
 const stateProbability_q = (j: number, serviceClasses: ServiceClass[]): number => {
-  const results: number[] = [];
-  // Base case: q(0) = 1
-  if (j === 0) {
-    results[0] = 1;
-    return 1;
-  }
-  if (j < 0) return 0;
+  const memo: Record<number, number> = {};
 
-  let sum = 0;
-  for (const serviceClass of serviceClasses) {
-    const { bu, incomingLoad_a } = serviceClass;
-    sum += incomingLoad_a * bu * stateProbability_q(j - bu, serviceClasses);
-  }
+  const compute = (k: number): number => {
+    // Base cases
+    if (k === 0) return 1;
+    if (k < 0) return 0;
 
-  const result = (1 / j) * sum;
+    // Check memo
+    if (memo[k] !== undefined) return memo[k];
 
-  results[j] = parseFloat(result.toFixed(numberOfDigitsAfterDecimal));
+    // Compute the state probability
+    let sum = 0;
+    for (const serviceClass of serviceClasses) {
+      const { bu, incomingLoad_a } = serviceClass;
+      sum += incomingLoad_a * bu * compute(k - bu);
+    }
 
-  return result;
+    // Memoize and return result
+    const result = (1 / k) * sum;
+    memo[k] = parseFloat(result.toFixed(numberOfDigitsAfterDecimal));
+    return memo[k];
+  };
+
+  return compute(j);
 };
 
 export const unnormalisedKaufmanRobertsFormula = (
   capacity: number,
   serviceClasses: ServiceClass[]
 ): number[] => {
-  if (serviceClasses.length === 0) return [];
+  if (!serviceClasses.length) return [];
 
-  const results: number[] = [];
+  const results = Array(capacity + 1).fill(0);
 
-  const calculateStateProbabilities = (j: number): void => {
-    if (j > capacity) return;
-
+  for (let j = 0; j <= capacity; j++) {
     results[j] = parseFloat(
       stateProbability_q(j, serviceClasses).toFixed(numberOfDigitsAfterDecimal)
     );
+  }
 
-    calculateStateProbabilities(j + 1);
-  };
-
-  calculateStateProbabilities(0);
   return results;
 };
 

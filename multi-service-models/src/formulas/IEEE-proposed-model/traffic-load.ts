@@ -2,10 +2,10 @@ import { numberOfDigitsAfterDecimal } from '../../constants';
 
 interface serviceClasssesRamCapacity {
   serviceClass: number;
-  ramCapacity: number;
+  bu: number;
 }
 
-interface TrafficLoad {
+export interface TrafficLoad {
   [key: string]: number;
 }
 
@@ -20,8 +20,8 @@ export const calculateTrafficLoad = (
   const adjustedTrafficLoad = (initialTrafficLoad * ramCapacity) / totalServiceClasses;
 
   serviceClassses.forEach((serviceClass) => {
-    result[`traffic_load_a_${serviceClass.serviceClass}`] = parseFloat(
-      (adjustedTrafficLoad / serviceClass.ramCapacity).toFixed(numberOfDigitsAfterDecimal)
+    result[`${serviceClass.serviceClass}`] = parseFloat(
+      (adjustedTrafficLoad / serviceClass.bu).toFixed(numberOfDigitsAfterDecimal)
     );
   });
 

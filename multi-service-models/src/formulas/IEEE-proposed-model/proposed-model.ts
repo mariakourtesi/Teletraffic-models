@@ -13,11 +13,10 @@ export const calculateSubsystemBlockingKaufmanRoberts = (
   const { ramCapacity, processorCapacity, diskCapacity, bpsCapacity } = capacities;
 
   const { ram, processor, disk, bitrate } = serviceClassConfigs;
-
-  const ramSubsystem = callBlockingProbability(ramCapacity.capacity, ram);
-  const processorSubsystem = callBlockingProbability(processorCapacity.capacity, processor);
-  const diskSubsystem = callBlockingProbability(diskCapacity.capacity, disk);
-  const bitrateSubsystem = callBlockingProbability(bpsCapacity.capacity, bitrate);
+  const ramSubsystem = callBlockingProbability(ramCapacity.bu, ram);
+  const processorSubsystem = callBlockingProbability(processorCapacity.bu, processor);
+  const diskSubsystem = callBlockingProbability(diskCapacity.bu, disk);
+  const bitrateSubsystem = callBlockingProbability(bpsCapacity.bu, bitrate);
 
   return {
     RAM: ramSubsystem,
@@ -36,14 +35,14 @@ export const calculateBlockingLAR = (
   const { ramCapacity, processorCapacity, diskCapacity, bpsCapacity } = capacities;
   const { ram, processor, disk, bitrate } = serviceClassConfigs;
 
-  const ramSubsystem = blockingProbabilityLAR(resourcesCount, ramCapacity.capacity, ram);
+  const ramSubsystem = blockingProbabilityLAR(resourcesCount, ramCapacity.bu, ram);
   const processorSubsystem = blockingProbabilityLAR(
     resourcesCount,
-    processorCapacity.capacity,
+    processorCapacity.bu,
     processor
   );
-  const diskSubsystem = blockingProbabilityLAR(resourcesCount, diskCapacity.capacity, disk);
-  const bitrateSubsystem = blockingProbabilityLAR(resourcesCount, bpsCapacity.capacity, bitrate);
+  const diskSubsystem = blockingProbabilityLAR(resourcesCount, diskCapacity.bu, disk);
+  const bitrateSubsystem = blockingProbabilityLAR(resourcesCount, bpsCapacity.bu, bitrate);
 
   return {
     RAM: ramSubsystem,

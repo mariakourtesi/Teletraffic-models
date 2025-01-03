@@ -60,7 +60,7 @@ describe('Kaufman Roberts Formulas', () => {
           incomingLoad_a: 1
         }
       ],
-      expectedUnormalisedValue: [1, 2, 3, 3.3333333, 3.1666667]
+      expectedUnormalisedValue: [1, 2, 3, 3.3333333, 3.1666666]
     }
   ])(`When $description`, ({ capacity, serviceClasses, expectedUnormalisedValue }) => {
     it(`should return ${expectedUnormalisedValue}`, () => {

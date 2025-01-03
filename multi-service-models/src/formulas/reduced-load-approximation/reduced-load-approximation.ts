@@ -48,13 +48,18 @@ export const blockingProbabilityNetworkTopology = (
         incomingLoad_a: calculateIncomingLoad(sc, link, result, previousResult, initialResult)
       }));
 
-    const stateProbabilityValues = kaufmanRoberts(link.capacity, newServiceClasses);
+    let stateProbabilityValues;
+    try {
+      stateProbabilityValues = kaufmanRoberts(link.bu, newServiceClasses);
+    } catch (error) {
+      throw new Error(`Error in kaufmanRoberts calculation for link ${link.link}: ${error}`);
+    }
 
     newServiceClasses.forEach((sc) => {
       let cumulativeBlockingProb = 0;
       const requested_bu = sc.bu;
 
-      for (let j = link.capacity - requested_bu + 1; j <= link.capacity; j++) {
+      for (let j = link.bu - requested_bu + 1; j <= link.bu; j++) {
         const q_i = stateProbabilityValues[`q(${j})`] || 0;
         cumulativeBlockingProb += q_i;
       }
@@ -73,12 +78,12 @@ const calculateBlockingWithReducedTrafficLoad = (
   const threshold = 0.000001;
   let currentResult = blockingProbabilityNetworkTopology(links, serviceClasses, {});
   let difference: number;
-  let iterations = 0; 
+  let iterations = 0;
 
   do {
     iterations++;
     const previousResult = { ...currentResult };
-   
+
     currentResult = blockingProbabilityNetworkTopology(links, serviceClasses, previousResult);
     difference = Math.max(
       ...Object.keys(currentResult).map((key) =>
@@ -111,22 +116,21 @@ export const callBlockingProbabilityinRLA = (
   return result;
 };
 
-
 export const callBlockingProbabilityinRLAForProposedModel = (
   links: networkTopology[],
   serviceClasses: ServiceClassWithRoute[]
 ): { [key: string]: number } => {
   const blockingProbabilities = calculateBlockingWithReducedTrafficLoad(links, serviceClasses);
-  const logs:{ [key: string]: number } = {}; 
+  const logs: { [key: string]: number } = {};
 
   serviceClasses.forEach((sc) => {
     const { serviceClass, route } = sc;
     route.forEach((link) => {
       const key = `V_link${link.link}_class_${serviceClass}`;
       const value = blockingProbabilities[key];
-      logs[key] = value; 
+      logs[key] = value;
     });
   });
 
-  return logs; 
+  return logs;
 };

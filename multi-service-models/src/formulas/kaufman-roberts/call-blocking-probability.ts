@@ -13,11 +13,11 @@ export const callBlockingProbability = (
   let probabilityValues;
   const BRpolicy = isServiceClassWithBR(serviceClasses[0]);
 
-  if (!BRpolicy) {
+  if (BRpolicy) {
+    probabilityValues = robertsFormulaBRPolicy(capacity, serviceClasses as ServiceClassWithBR[]);
+  } else {
     probabilityValues = kaufmanRoberts(capacity, serviceClasses);
   }
-
-  probabilityValues = robertsFormulaBRPolicy(capacity, serviceClasses as ServiceClassWithBR[]);
 
   const result: { [key: string]: number } = {};
 
