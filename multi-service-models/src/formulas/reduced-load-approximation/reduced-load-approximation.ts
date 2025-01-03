@@ -15,7 +15,7 @@ const calculateIncomingLoad = (
   result: { [key: string]: number },
   previousResult: { [key: string]: number },
   initialResult: number
-) => {
+): number => {
   const { route, incomingLoad_a, serviceClass: scId } = serviceClass;
   let updatedLoad = incomingLoad_a;
 
@@ -79,6 +79,8 @@ const calculateBlockingWithReducedTrafficLoad = (
   let currentResult = blockingProbabilityNetworkTopology(links, serviceClasses, {});
   let difference: number;
   let iterations = 0;
+  let previousDifference = Infinity;
+  let sameDifferenceCount = 0;
 
   do {
     iterations++;
@@ -90,7 +92,20 @@ const calculateBlockingWithReducedTrafficLoad = (
         Math.abs(currentResult[key] - (previousResult[key] || 0))
       )
     );
-  } while (difference > threshold);
+
+    if (difference === previousDifference) {
+      sameDifferenceCount++;
+    } else {
+      sameDifferenceCount = 0;
+    }
+
+    previousDifference = difference;
+
+    if (sameDifferenceCount >= 2) {
+      break;
+    }
+  } while (difference >= threshold);
+
   console.log(`Number of iterations: ${iterations}`);
   return currentResult;
 };
