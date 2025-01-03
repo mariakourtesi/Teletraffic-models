@@ -17,7 +17,6 @@ export const calculateTrafficLoad = (
   const result: TrafficLoad = {};
   const totalServiceClasses = serviceClassses.length;
 
-  console.log('totalServiceClasses', totalServiceClasses);
   const adjustedTrafficLoad = (initialTrafficLoad * ramCapacity) / totalServiceClasses;
 
   serviceClassses.forEach((serviceClass) => {

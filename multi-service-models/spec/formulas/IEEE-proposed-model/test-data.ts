@@ -1,15 +1,15 @@
-// data for testing
-//TODO: move to test folder and add tests
-import {
-  calculateBlockingLAR,
-  calculateBlockingRatios,
-  calculateEi,
-  calculateSubsystemBlockingKaufmanRoberts,
-  processResultInRLA
-} from './proposed-model';
-import { Capacities, ServiceClassConfigs } from './types';
+import { Capacities, ServiceClassConfigs } from '../../../src/formulas/IEEE-proposed-model/types';
 
-const serviceClassConfigs: ServiceClassConfigs = {
+export const capacities: Capacities = {
+  ramCapacity: { link: 1, capacity: 10 },
+  processorCapacity: { link: 2, capacity: 12 },
+  diskCapacity: { link: 3, capacity: 11 },
+  bpsCapacity: { link: 4, capacity: 10 }
+};
+
+export const resourceCount = 3;
+
+export const serviceClassConfigs: ServiceClassConfigs = {
   ram: [
     {
       serviceClass: 1,
@@ -80,7 +80,7 @@ const serviceClassConfigs: ServiceClassConfigs = {
   ]
 };
 
-const serviceClassConfigsLAR = {
+export const serviceClassConfigsLAR = {
   ram: serviceClassConfigs.ram.map((item) => ({
     ...item,
     incomingLoad_a: item.incomingLoad_a * 3
@@ -99,7 +99,7 @@ const serviceClassConfigsLAR = {
   }))
 };
 
-const serviceClasses = [
+export const serviceClasses = [
   {
     serviceClass: 1,
     incomingLoad_a: 3,
@@ -131,19 +131,3 @@ const serviceClasses = [
     ]
   }
 ];
-
-const capacities: Capacities = {
-  ramCapacity: { link: 1, capacity: 10 },
-  processorCapacity: { link: 2, capacity: 12 },
-  diskCapacity: { link: 3, capacity: 11 },
-  bpsCapacity: { link: 4, capacity: 10 }
-};
-
-const resourceCount = 3;
-
-const kaufmanRoberts = calculateSubsystemBlockingKaufmanRoberts(capacities, serviceClassConfigs);
-const lar = calculateBlockingLAR(resourceCount, capacities, serviceClassConfigsLAR);
-const relationR = calculateBlockingRatios(kaufmanRoberts, lar);
-const reducedLoadApproximation = processResultInRLA(capacities, serviceClasses);
-const Ei = calculateEi(relationR, reducedLoadApproximation);
-console.log(Ei);

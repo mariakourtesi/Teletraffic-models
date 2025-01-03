@@ -12,15 +12,12 @@ export const calculateSubsystemBlockingKaufmanRoberts = (
 ): BlockingRatios => {
   const { ramCapacity, processorCapacity, diskCapacity, bpsCapacity } = capacities;
 
-  const { serviceClasses, serviceClassesBitrate } = serviceClassConfigs;
+  const { ram, processor, disk, bitrate } = serviceClassConfigs;
 
-  const ramSubsystem = callBlockingProbability(ramCapacity.capacity, serviceClasses);
-  const processorSubsystem = callBlockingProbability(processorCapacity.capacity, serviceClasses);
-  const diskSubsystem = callBlockingProbability(diskCapacity.capacity, serviceClasses);
-  const bitrateSubsystem = callBlockingProbability(
-    bpsCapacity.capacity,
-    serviceClassesBitrate ?? serviceClasses
-  );
+  const ramSubsystem = callBlockingProbability(ramCapacity.capacity, ram);
+  const processorSubsystem = callBlockingProbability(processorCapacity.capacity, processor);
+  const diskSubsystem = callBlockingProbability(diskCapacity.capacity, disk);
+  const bitrateSubsystem = callBlockingProbability(bpsCapacity.capacity, bitrate);
 
   return {
     RAM: ramSubsystem,
@@ -37,24 +34,16 @@ export const calculateBlockingLAR = (
   serviceClassConfigs: ServiceClassConfigs
 ): BlockingRatios => {
   const { ramCapacity, processorCapacity, diskCapacity, bpsCapacity } = capacities;
-  const { serviceClasses, serviceClassesBitrate } = serviceClassConfigs;
+  const { ram, processor, disk, bitrate } = serviceClassConfigs;
 
-  const ramSubsystem = blockingProbabilityLAR(resourcesCount, ramCapacity.capacity, serviceClasses);
+  const ramSubsystem = blockingProbabilityLAR(resourcesCount, ramCapacity.capacity, ram);
   const processorSubsystem = blockingProbabilityLAR(
     resourcesCount,
     processorCapacity.capacity,
-    serviceClasses
+    processor
   );
-  const diskSubsystem = blockingProbabilityLAR(
-    resourcesCount,
-    diskCapacity.capacity,
-    serviceClasses
-  );
-  const bitrateSubsystem = blockingProbabilityLAR(
-    resourcesCount,
-    bpsCapacity.capacity,
-    serviceClassesBitrate ?? serviceClasses
-  );
+  const diskSubsystem = blockingProbabilityLAR(resourcesCount, diskCapacity.capacity, disk);
+  const bitrateSubsystem = blockingProbabilityLAR(resourcesCount, bpsCapacity.capacity, bitrate);
 
   return {
     RAM: ramSubsystem,
