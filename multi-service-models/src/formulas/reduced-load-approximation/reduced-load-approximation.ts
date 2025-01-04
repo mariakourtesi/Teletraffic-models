@@ -76,35 +76,25 @@ const calculateBlockingWithReducedTrafficLoad = (
   serviceClasses: ServiceClassWithRoute[]
 ): { [key: string]: number } => {
   const threshold = 0.000001;
+  const maxIterations = 1000;
   let currentResult = blockingProbabilityNetworkTopology(links, serviceClasses, {});
   let difference: number;
   let iterations = 0;
-  let previousDifference = Infinity;
-  let sameDifferenceCount = 0;
 
   do {
     iterations++;
     const previousResult = { ...currentResult };
 
     currentResult = blockingProbabilityNetworkTopology(links, serviceClasses, previousResult);
-    difference = Math.max(
-      ...Object.keys(currentResult).map((key) =>
-        Math.abs(currentResult[key] - (previousResult[key] || 0))
-      )
+    const differences = Object.keys(currentResult).map((key) =>
+      Math.abs(currentResult[key] - (previousResult[key] || 0))
     );
+    difference = differences.length > 0 ? Math.max(...differences) : 0;
+  } while (difference > threshold && iterations < maxIterations);
 
-    if (difference === previousDifference) {
-      sameDifferenceCount++;
-    } else {
-      sameDifferenceCount = 0;
-    }
-
-    previousDifference = difference;
-
-    if (sameDifferenceCount >= 2) {
-      break;
-    }
-  } while (difference >= threshold);
+  if (iterations >= maxIterations) {
+    console.warn('Reached maximum iterations without convergence.');
+  }
 
   console.log(`Number of iterations: ${iterations}`);
   return currentResult;
