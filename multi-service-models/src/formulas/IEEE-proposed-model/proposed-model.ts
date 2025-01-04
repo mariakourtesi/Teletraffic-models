@@ -71,6 +71,10 @@ export const calculateBlockingRatios = (
           const krValue = krValues[className];
           const larValue = larValues[className];
 
+          if (isNaN(krValue) || isNaN(larValue)) {
+            throw new Error(`krValue or larValue is NaN for ${subsystem} and ${className}`);
+          }
+
           result[subsystem as keyof BlockingRatios][className] =
             !isNaN(krValue) && !isNaN(larValue)
               ? parseFloat((larValue / krValue).toFixed(numberOfDigitsAfterDecimal))

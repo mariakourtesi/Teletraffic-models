@@ -1,10 +1,10 @@
 import { Capacities, ServiceClassConfigs } from '../../../src/formulas/IEEE-proposed-model/types';
 
 export const capacities: Capacities = {
-  ramCapacity: { link: 1, capacity: 10 },
-  processorCapacity: { link: 2, capacity: 12 },
-  diskCapacity: { link: 3, capacity: 11 },
-  bpsCapacity: { link: 4, capacity: 10 }
+  ramCapacity: { link: 1, bu: 10 },
+  processorCapacity: { link: 2, bu: 12 },
+  diskCapacity: { link: 3, bu: 11 },
+  bpsCapacity: { link: 4, bu: 10 }
 };
 
 export const resourceCount = 3;
