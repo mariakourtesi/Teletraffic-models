@@ -61,6 +61,7 @@ export const blockingProbabilityNetworkTopology = (
 
       for (let j = link.bu - requested_bu + 1; j <= link.bu; j++) {
         const q_i = stateProbabilityValues[`q(${j})`] || 0;
+
         cumulativeBlockingProb += q_i;
       }
 
@@ -75,24 +76,35 @@ const calculateBlockingWithReducedTrafficLoad = (
   links: networkTopology[],
   serviceClasses: ServiceClassWithRoute[]
 ): { [key: string]: number } => {
-  const threshold = 0.000001;
-  const maxIterations = 1000;
+  const THRESHOLD = 0.000001;
+  const MAX_ITERATIONS = 1000;
+
   let currentResult = blockingProbabilityNetworkTopology(links, serviceClasses, {});
-  let difference: number;
+  const differenceCount: { [key: number]: number } = {};
   let iterations = 0;
 
-  do {
+  while (iterations < MAX_ITERATIONS) {
     iterations++;
     const previousResult = { ...currentResult };
-
     currentResult = blockingProbabilityNetworkTopology(links, serviceClasses, previousResult);
-    const differences = Object.keys(currentResult).map((key) =>
-      Math.abs(currentResult[key] - (previousResult[key] || 0))
-    );
-    difference = differences.length > 0 ? Math.max(...differences) : 0;
-  } while (difference > threshold && iterations < maxIterations);
 
-  if (iterations >= maxIterations) {
+    const maxDifference = Math.max(
+      ...Object.keys(currentResult).map((key) =>
+        Math.abs(currentResult[key] - (previousResult[key] || 0))
+      )
+    );
+
+    if (maxDifference <= THRESHOLD) break;
+
+    differenceCount[maxDifference] = (differenceCount[maxDifference] || 0) + 1;
+
+    if (differenceCount[maxDifference] >= 2) {
+      console.warn('Same difference occurred more than twice. Breaking the loop.');
+      break;
+    }
+  }
+
+  if (iterations >= MAX_ITERATIONS) {
     console.warn('Reached maximum iterations without convergence.');
   }
 
@@ -111,7 +123,6 @@ export const callBlockingProbabilityinRLA = (
     const { serviceClass, route } = sc;
     const totalBlockingProbability = route.reduce((cbp, link) => {
       const key = `V_link${link.link}_class_${serviceClass}`;
-      console.log(key, blockingProbabilities[key]);
       return cbp * (1 - (blockingProbabilities[key] || 0));
     }, 1);
 
@@ -120,6 +131,29 @@ export const callBlockingProbabilityinRLA = (
 
   return result;
 };
+
+const link = [
+  { link: 1, bu: 4 },
+  { link: 2, bu: 5 }
+];
+
+const serviceClasses = [
+  {
+    serviceClass: 1,
+    incomingLoad_a: 1,
+    route: [
+      { link: 1, bu: 1 },
+      { link: 2, bu: 2 }
+    ]
+  },
+  {
+    serviceClass: 2,
+    incomingLoad_a: 1,
+    route: [{ link: 2, bu: 2 }]
+  }
+];
+
+//console.log(callBlockingProbabilityinRLA(link, serviceClasses));
 
 export const callBlockingProbabilityinRLAForProposedModel = (
   links: networkTopology[],
@@ -139,3 +173,45 @@ export const callBlockingProbabilityinRLAForProposedModel = (
 
   return logs;
 };
+
+const serciceClasses = [
+  {
+    serviceClass: 1,
+    incomingLoad_a: 12.8,
+    route: [
+      { link: 1, bu: 1 },
+      { link: 2, bu: 1 },
+      { link: 3, bu: 1 },
+      { link: 4, bu: 2 }
+    ]
+  },
+  {
+    serviceClass: 2,
+    incomingLoad_a: 6.4,
+    route: [
+      { link: 1, bu: 2 },
+      { link: 2, bu: 2 },
+      { link: 3, bu: 2 },
+      { link: 4, bu: 2 }
+    ]
+  },
+  {
+    serviceClass: 3,
+    incomingLoad_a: 3.2,
+    route: [
+      { link: 1, bu: 4 },
+      { link: 2, bu: 4 },
+      { link: 3, bu: 4 },
+      { link: 4, bu: 2 }
+    ]
+  }
+];
+
+const links = [
+  { link: 1, bu: 32 },
+  { link: 2, bu: 24 },
+  { link: 3, bu: 28 },
+  { link: 4, bu: 40 }
+];
+
+//console.log(callBlockingProbabilityinRLAForProposedModel(links, serciceClasses));
