@@ -164,11 +164,8 @@ export const proposedModel = (
   return Ei;
 };
 
-//, 1.1, 1.2, 1.
-[0.7, 0.8, 0.9, 1.0, 1.1, 1.11, 1.12, 1.13, 1.2, 1.3].forEach((initialLoad) => {
+//1.11, 1.12, 1.13, 1.2, 1.3
+[0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3].forEach((initialLoad) => {
   console.log('initialLoad', initialLoad);
   console.log(proposedModel(resourceCount, capacities, initialLoad, serviceClassConfigs));
 });
-
-// console.log(proposedModel(resourceCount, capacities, 1.3, serviceClassConfigs));
-//{ B_class_1: 0.0181632, B_class_2: 0.0736552, B_class_3: 0.2381134 }

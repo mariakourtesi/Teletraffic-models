@@ -1,1 +1,1 @@
-export const numberOfDigitsAfterDecimal = 7;
+export const NUMBER_OF_DIGITS_AFTER_DECIMAL = 7;

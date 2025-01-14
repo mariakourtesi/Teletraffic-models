@@ -1,6 +1,6 @@
 import { ServiceClassWithBR } from '../types';
 import { normaliseProbabilityValues } from '../normalise-probabilities';
-import { numberOfDigitsAfterDecimal } from '../../constants';
+import { NUMBER_OF_DIGITS_AFTER_DECIMAL } from '../../constants';
 
 const stateProbablityWithBR_q = (
   j: number,
@@ -31,7 +31,7 @@ const stateProbablityWithBR_q = (
 
   const result = (1 / j) * sum;
 
-  results[j] = parseFloat(result.toFixed(numberOfDigitsAfterDecimal));
+  results[j] = parseFloat(result.toFixed(NUMBER_OF_DIGITS_AFTER_DECIMAL));
 
   return result;
 };
@@ -45,7 +45,7 @@ export const robertsFormulaBRPolicy = (capacity: number, serviceClasses: Service
 
   for (let j = 0; j <= capacity; j++) {
     results[j] = parseFloat(
-      stateProbablityWithBR_q(j, serviceClasses, capacity).toFixed(numberOfDigitsAfterDecimal)
+      stateProbablityWithBR_q(j, serviceClasses, capacity).toFixed(NUMBER_OF_DIGITS_AFTER_DECIMAL)
     );
   }
   normaliseProbabilityValues(results).forEach((prob: number, index: number) => {

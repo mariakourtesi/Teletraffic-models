@@ -1,6 +1,6 @@
 import { ServiceClass } from '../types';
 import { normaliseProbabilityValues } from '../normalise-probabilities';
-import { numberOfDigitsAfterDecimal } from '../../constants';
+import { NUMBER_OF_DIGITS_AFTER_DECIMAL } from '../../constants';
 
 const stateProbability_q = (j: number, serviceClasses: ServiceClass[]): number => {
   const memo: Record<number, number> = {};
@@ -22,7 +22,7 @@ const stateProbability_q = (j: number, serviceClasses: ServiceClass[]): number =
 
     // Memoize and return result
     const result = (1 / k) * sum;
-    memo[k] = parseFloat(result.toFixed(numberOfDigitsAfterDecimal));
+    memo[k] = parseFloat(result.toFixed(NUMBER_OF_DIGITS_AFTER_DECIMAL));
     return memo[k];
   };
 
@@ -39,7 +39,7 @@ export const unnormalisedKaufmanRobertsFormula = (
 
   for (let j = 0; j <= capacity; j++) {
     results[j] = parseFloat(
-      stateProbability_q(j, serviceClasses).toFixed(numberOfDigitsAfterDecimal)
+      stateProbability_q(j, serviceClasses).toFixed(NUMBER_OF_DIGITS_AFTER_DECIMAL)
     );
   }
 

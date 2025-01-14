@@ -1,5 +1,5 @@
 import { ServiceClassWithRoute } from '../types';
-import { numberOfDigitsAfterDecimal } from '../../constants';
+import { NUMBER_OF_DIGITS_AFTER_DECIMAL } from '../../constants';
 import { callBlockingProbability } from '../kaufman-roberts/call-blocking-probability';
 import { blockingProbabilityLAR } from '../limited-available-resources-model/blocking-probability';
 import { callBlockingProbabilityinRLAForProposedModel } from '../reduced-load-approximation/reduced-load-approximation';
@@ -77,7 +77,7 @@ export const calculateBlockingRatios = (
 
           result[subsystem as keyof BlockingRatios][className] =
             !isNaN(krValue) && !isNaN(larValue)
-              ? parseFloat((larValue / krValue).toFixed(numberOfDigitsAfterDecimal))
+              ? parseFloat((larValue / krValue).toFixed(NUMBER_OF_DIGITS_AFTER_DECIMAL))
               : NaN;
         }
       }
@@ -143,7 +143,7 @@ export const calculateEi = (
 
     // Calculate Ei for this class
     const Ei = 1 - multiplications.reduce((product, value) => product * (1 - value), 1);
-    result[classKey] = +Ei.toFixed(numberOfDigitsAfterDecimal);
+    result[classKey] = +Ei.toFixed(NUMBER_OF_DIGITS_AFTER_DECIMAL);
   });
 
   return result;

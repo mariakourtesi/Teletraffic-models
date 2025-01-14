@@ -1,4 +1,4 @@
-import { numberOfDigitsAfterDecimal } from '../constants';
+import { NUMBER_OF_DIGITS_AFTER_DECIMAL } from '../constants';
 
 export const calculateNormalizationConstant_G = (unormalizedProbabilities: number[]): number => {
   if (unormalizedProbabilities.length === 0) return 0;
@@ -8,6 +8,6 @@ export const calculateNormalizationConstant_G = (unormalizedProbabilities: numbe
 export const normaliseProbabilityValues = (probabilities: number[]): number[] => {
   const sum = calculateNormalizationConstant_G(probabilities);
   return probabilities.map((probability) =>
-    parseFloat((probability / sum).toFixed(numberOfDigitsAfterDecimal))
+    parseFloat((probability / sum).toFixed(NUMBER_OF_DIGITS_AFTER_DECIMAL))
   );
 };

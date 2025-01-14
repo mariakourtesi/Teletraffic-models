@@ -1,5 +1,5 @@
 import { ServiceClass, ServiceClassWithBR } from '../types';
-import { numberOfDigitsAfterDecimal } from '../../constants';
+import { NUMBER_OF_DIGITS_AFTER_DECIMAL } from '../../constants';
 import { kaufmanRoberts } from './kaufman-roberts-formula';
 
 const calculateLinkUtilization = (capacity: number, serviceClasses: ServiceClass[]): number => {
@@ -18,7 +18,7 @@ export const linkUtilization_U = (capacity: number, serviceClasses: ServiceClass
 
 export const trunkEficiency_n = (capacity: number, serviceClasses: ServiceClass[]): string => {
   const utilization_G = calculateLinkUtilization(capacity, serviceClasses);
-  return `${((utilization_G / capacity) * 100).toFixed(numberOfDigitsAfterDecimal)}%`;
+  return `${((utilization_G / capacity) * 100).toFixed(NUMBER_OF_DIGITS_AFTER_DECIMAL)}%`;
 };
 
 export const meanNumberOfCallsInSystemInState_J = (

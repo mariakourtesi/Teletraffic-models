@@ -1,4 +1,4 @@
-import { numberOfDigitsAfterDecimal } from '../../constants';
+import { NUMBER_OF_DIGITS_AFTER_DECIMAL } from '../../constants';
 
 interface serviceClasssesRamCapacity {
   serviceClass: number;
@@ -21,7 +21,7 @@ export const calculateTrafficLoad = (
 
   serviceClassses.forEach((serviceClass) => {
     result[`${serviceClass.serviceClass}`] = parseFloat(
-      (adjustedTrafficLoad / serviceClass.bu).toFixed(numberOfDigitsAfterDecimal)
+      (adjustedTrafficLoad / serviceClass.bu).toFixed(NUMBER_OF_DIGITS_AFTER_DECIMAL)
     );
   });
 

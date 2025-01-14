@@ -1,6 +1,6 @@
 import { ServiceClass } from '../types';
 import { calculateNormalizationConstant_G } from '../normalise-probabilities';
-import { numberOfDigitsAfterDecimal } from '../../constants';
+import { NUMBER_OF_DIGITS_AFTER_DECIMAL } from '../../constants';
 import { unnormalisedLARModel } from './limited-available-resources-model';
 import { conditionalTransitionProbability } from '../../utils/conditional-transition-probability';
 
@@ -40,7 +40,7 @@ export const blockingProbabilityLAR = (
           ));
     }
     result[`B_class_${index + 1}`] = parseFloat(
-      (cbp / normalisationConstant).toFixed(numberOfDigitsAfterDecimal)
+      (cbp / normalisationConstant).toFixed(NUMBER_OF_DIGITS_AFTER_DECIMAL)
     );
   });
   return result;
