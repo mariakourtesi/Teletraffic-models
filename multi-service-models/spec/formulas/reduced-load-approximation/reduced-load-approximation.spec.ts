@@ -23,8 +23,8 @@ describe('Reduced Load Approximation', () => {
         }
       ],
       expected: {
-        B1: 0.11479,
-        B2: 0.26778
+        B1: 0.1147916,
+        B2: 0.2677767
       }
     },
     {
@@ -49,8 +49,8 @@ describe('Reduced Load Approximation', () => {
         }
       ],
       expected: {
-        B1: 0.34027,
-        B2: 0.55634
+        B1: 0.3402666,
+        B2: 0.5563373
       }
     },
     {
@@ -77,8 +77,8 @@ describe('Reduced Load Approximation', () => {
         }
       ],
       expected: {
-        B1: 0.21376,
-        B2: 0.38066
+        B1: 0.2137616,
+        B2: 0.3806593
       }
     },
     {
@@ -117,7 +117,7 @@ describe('Reduced Load Approximation', () => {
           ]
         }
       ],
-      expected: { B1: 0.46216, B2: 0.76463, B3: 0.06567 }
+      expected: { B1: 0.4621552, B2: 0.7646269, B3: 0.0656744 }
     },
     {
       description:
@@ -142,8 +142,8 @@ describe('Reduced Load Approximation', () => {
         }
       ],
       expected: {
-        B1: 0.40131,
-        B2: 0.39952
+        B1: 0.401309,
+        B2: 0.399524
       }
     },
     {
@@ -187,7 +187,7 @@ describe('Reduced Load Approximation', () => {
           ]
         }
       ],
-      expected: { B1: 0.31666, B2: 0.41514, B3: 0.53253 }
+      expected: { B1: 0.3166559, B2: 0.4151443, B3: 0.5325276 }
     },
     {
       description: '4 links and 1 service class, 1 service class requires same 1 bu from each link',
@@ -231,7 +231,7 @@ describe('Reduced Load Approximation', () => {
           ]
         }
       ],
-      expected: { B1: 0.59651 } // RLA gives different blocking probability compared to LAR and Kaufman-Roberts model
+      expected: { B1: 0.5965109 } // RLA gives different blocking probability compared to LAR and Kaufman-Roberts model
     }
   ])(`When $description`, ({ links, serviceClasses, expected }) => {
     it('should calculate the CBP for each service class that traverses the link network topology', () => {

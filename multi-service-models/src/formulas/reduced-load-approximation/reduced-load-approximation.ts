@@ -1,8 +1,9 @@
+import { NUMBER_OF_DIGITS_AFTER_DECIMAL } from '../../constants';
 import { kaufmanRoberts } from '../kaufman-roberts/kaufman-roberts-formula';
 import { networkTopology, ServiceClassWithRoute } from '../types';
 
 const THRESHOLD = 0.000001;
-const MAX_ITERATIONS = 1000;
+const MAX_ITERATIONS = 5000;
 
 const initializeResult = (
   key: string,
@@ -126,32 +127,13 @@ export const callBlockingProbabilityinRLA = (
       return cbp * (1 - (blockingProbabilities[key] || 0));
     }, 1);
 
-    result[`B${serviceClass}`] = +(1 - totalBlockingProbability).toFixed(5);
+    result[`B${serviceClass}`] = +(1 - totalBlockingProbability).toFixed(
+      NUMBER_OF_DIGITS_AFTER_DECIMAL
+    );
   });
 
   return result;
 };
-
-const link = [
-  { link: 1, bu: 4 },
-  { link: 2, bu: 5 }
-];
-
-const serviceClasses = [
-  {
-    serviceClass: 1,
-    incomingLoad_a: 1,
-    route: [
-      { link: 1, bu: 1 },
-      { link: 2, bu: 2 }
-    ]
-  },
-  {
-    serviceClass: 2,
-    incomingLoad_a: 1,
-    route: [{ link: 2, bu: 2 }]
-  }
-];
 
 export const callBlockingProbabilityinRLAForProposedModel = (
   links: networkTopology[],
