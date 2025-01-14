@@ -1,6 +1,9 @@
 import { kaufmanRoberts } from '../kaufman-roberts/kaufman-roberts-formula';
 import { networkTopology, ServiceClassWithRoute } from '../types';
 
+const THRESHOLD = 0.000001;
+const MAX_ITERATIONS = 1000;
+
 const initializeResult = (
   key: string,
   previousResult: { [key: string]: number },
@@ -76,9 +79,6 @@ const calculateBlockingWithReducedTrafficLoad = (
   links: networkTopology[],
   serviceClasses: ServiceClassWithRoute[]
 ): { [key: string]: number } => {
-  const THRESHOLD = 0.000001;
-  const MAX_ITERATIONS = 1000;
-
   let currentResult = blockingProbabilityNetworkTopology(links, serviceClasses, {});
   const differenceCount: { [key: number]: number } = {};
   let iterations = 0;
@@ -153,8 +153,6 @@ const serviceClasses = [
   }
 ];
 
-//console.log(callBlockingProbabilityinRLA(link, serviceClasses));
-
 export const callBlockingProbabilityinRLAForProposedModel = (
   links: networkTopology[],
   serviceClasses: ServiceClassWithRoute[]
@@ -173,45 +171,3 @@ export const callBlockingProbabilityinRLAForProposedModel = (
 
   return logs;
 };
-
-const serciceClasses = [
-  {
-    serviceClass: 1,
-    incomingLoad_a: 12.8,
-    route: [
-      { link: 1, bu: 1 },
-      { link: 2, bu: 1 },
-      { link: 3, bu: 1 },
-      { link: 4, bu: 2 }
-    ]
-  },
-  {
-    serviceClass: 2,
-    incomingLoad_a: 6.4,
-    route: [
-      { link: 1, bu: 2 },
-      { link: 2, bu: 2 },
-      { link: 3, bu: 2 },
-      { link: 4, bu: 2 }
-    ]
-  },
-  {
-    serviceClass: 3,
-    incomingLoad_a: 3.2,
-    route: [
-      { link: 1, bu: 4 },
-      { link: 2, bu: 4 },
-      { link: 3, bu: 4 },
-      { link: 4, bu: 2 }
-    ]
-  }
-];
-
-const links = [
-  { link: 1, bu: 32 },
-  { link: 2, bu: 24 },
-  { link: 3, bu: 28 },
-  { link: 4, bu: 40 }
-];
-
-//console.log(callBlockingProbabilityinRLAForProposedModel(links, serciceClasses));
