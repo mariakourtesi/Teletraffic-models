@@ -33,7 +33,9 @@ export const calculateValidLinkStates = (
 
   generateStates(Array(serviceClasses.length).fill(0), 0);
 
-  return validLinkStates;
+  return Array.from(new Set(validLinkStates.map((state) => JSON.stringify(state)))).map((state) =>
+    JSON.parse(state)
+  );
 };
 
 function calculateLinkLoad(
