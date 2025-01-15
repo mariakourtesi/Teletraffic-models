@@ -1,23 +1,14 @@
-import { numberOfDigitsAfterDecimal } from '../../constants';
-import { calculateValidStates } from './valid-link-states-in-network-topology';
-
-//TODO: to revisit the tests and fix the formula
-
-interface ServiceClass {
-  serviceClass: number;
-  lambda: number; // Arrival rate (in Erlangs)
-  mu: number; // Service rate
-  bandwidth: number; // Required bandwidth units (b.u.) for each call
-  route: number[]; // Route: how many b.u. are used on each link
-}
+import { NUMBER_OF_DIGITS_AFTER_DECIMAL } from '../../constants';
+import { calculateValidLinkStates } from './valid-link-states-in-network-topology';
+import { networkTopology, ServiceClassWithRoute } from '../types';
 
 export const stateProbabilityNetworkTopology = (
-  topology: number[],
-  serviceClasses: ServiceClass[],
+  link: networkTopology[],
+  serviceClasses: ServiceClassWithRoute[],
   stateProbabilities: { [key: string]: number } = {},
   validLinkStates: number[][]
 ): { [key: string]: number } => {
-  const topologyKey = `q(${topology.join(',')})`;
+  const topologyKey = `q(${link.join(',')})`;
 
   // Check if this state has already been computed
   if (stateProbabilities[topologyKey] !== undefined) {
@@ -25,13 +16,13 @@ export const stateProbabilityNetworkTopology = (
   }
 
   // Base case: if all link capacities are zero
-  if (topology.every((link) => link === 0)) {
+  if (link.every((link) => link.capacity === 0)) {
     stateProbabilities[topologyKey] = 1.0; // q(0,...,0) = 1
     return stateProbabilities;
   }
 
   // If any link has a negative capacity, the state is invalid
-  if (topology.some((link) => link < 0)) {
+  if (link.some((link) => link.capacity < 0)) {
     stateProbabilities[topologyKey] = 0;
     return stateProbabilities;
   }
@@ -39,39 +30,35 @@ export const stateProbabilityNetworkTopology = (
   let sum = 0;
 
   // Iterate over the links in the topology
-  for (let index = 0; index < topology.length; index++) {
-    const jl = topology[index]; // Current link capacity
-
+  link.forEach((link, index) => {
     // Iterate over the service classes
     for (const serviceClass of serviceClasses) {
-      const { lambda, mu, bandwidth, route } = serviceClass;
-      const incomingLoad_a = lambda / mu;
+      const { incomingLoad_a, route } = serviceClass;
+      const bandwidth = route[index].bu;
 
-      if (route[index] === 0) continue; // Skip if the service class doesn't use this link
+      if (route[index].bu === 0) continue; // Skip if the service class doesn't use this link
 
-      const newTopology = [...topology];
-      newTopology[index] -= bandwidth;
-
-      if (newTopology[index] >= 0) {
+      if (link.bu >= 0) {
         const recursedProbabilities = stateProbabilityNetworkTopology(
-          newTopology,
+          topology,
           serviceClasses,
           stateProbabilities,
           validLinkStates
         );
-        const recursedKey = `q(${newTopology.join(',')})`;
+        const recursedKey = `q(${topology.join(',')})`;
 
         const recursedProbability = recursedProbabilities[recursedKey];
 
         sum += incomingLoad_a * bandwidth * recursedProbability;
+
+        // if (jl > 0) {
+        //   const result = (1 / jl) * sum;
+
+        //   stateProbabilities[topologyKey] = parseFloat(result.toFixed(numberOfDigitsAfterDecimal));
+        // }
       }
     }
-
-    if (jl > 0) {
-      const result = (1 / jl) * sum;
-      stateProbabilities[topologyKey] = parseFloat(result.toFixed(numberOfDigitsAfterDecimal));
-    }
-  }
+  });
 
   return stateProbabilities;
 };
@@ -103,11 +90,11 @@ const findValidKeys = (
 };
 
 export const dziongRobertsFormula = (
-  topology: number[],
-  serviceClasses: ServiceClass[]
+  topology: networkTopology[],
+  serviceClasses: ServiceClassWithRoute[]
 ): { [key: string]: number } => {
   const validLinkStates: number[][] = [];
-  const validStates = calculateValidStates(topology, serviceClasses);
+  const validStates = calculateValidLinkStates(topology, serviceClasses);
   validStates.forEach((state) => {
     const n1 = state[0];
     const n2 = state[1];
@@ -132,22 +119,26 @@ export const dziongRobertsFormula = (
   return validStatesinLink;
 };
 
-const topology = [4, 5];
-
-const serviceClasses: ServiceClass[] = [
+const topology = [
+  { link: 1, bu: 4 },
+  { link: 2, bu: 5 }
+];
+const serviceClasses: ServiceClassWithRoute[] = [
   {
     serviceClass: 1,
-    lambda: 1, // Arrival rate in Erlangs
-    mu: 1, // Service rate
-    bandwidth: 1, // Bandwidth units required per call
-    route: [1, 1] // Uses both Link 1 and Link 2 (1 b.u. on each link)
+    incomingLoad_a: 1,
+    route: [
+      { link: 1, bu: 1 },
+      { link: 2, bu: 1 }
+    ]
   },
   {
     serviceClass: 2,
-    lambda: 1,
-    mu: 1,
-    bandwidth: 2, // Requires 2 b.u. per call
-    route: [0, 1] // Uses only Link 2 (2 b.u. on Link 2)
+    incomingLoad_a: 1,
+    route: [
+      { link: 1, bu: 0 },
+      { link: 2, bu: 2 }
+    ]
   }
 ];
 
