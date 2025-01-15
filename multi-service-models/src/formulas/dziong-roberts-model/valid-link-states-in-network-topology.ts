@@ -1,78 +1,60 @@
-interface ServiceClass {
-  serviceClass: number;
-  lambda: number;
-  mu: number;
-  bandwidth: number;
-  route: number[];
-}
+import { networkTopology, ServiceClassWithRoute } from '../types';
 
-export const calculateValidStates = (
-  topology: number[],
-  serviceClasses: ServiceClass[]
+export const calculateValidLinkStates = (
+  topology: networkTopology[],
+  serviceClasses: ServiceClassWithRoute[]
 ): number[][] => {
-  const validStates: number[][] = [];
+  const validLinkStates: number[][] = [];
 
-  const maxCalls = serviceClasses.map((sc, idx) => {
-    const minCapacity = Math.min(
-      ...serviceClasses[idx].route.map((route, linkIdx) => {
-        return topology[linkIdx] / (route * sc.bandwidth || 1);
+  const maxCalls = serviceClasses.map((serviceClass) => {
+    const minCapacity = serviceClass.route
+      .map((route) => {
+        const link = topology.find((l) => l.link === route.link);
+        return link ? link.bu / route.bu : 0;
       })
-    );
-    return Math.floor(minCapacity);
+      .filter((value) => value > 0);
+    return minCapacity.length > 0 ? Math.floor(Math.min(...minCapacity)) : 0;
   });
 
-  for (let n1 = 0; n1 <= maxCalls[0]; n1++) {
-    for (let n2 = 0; n2 <= maxCalls[1]; n2++) {
-      const state = [n1, n2];
-      if (isValidState(state, topology, serviceClasses)) {
-        validStates.push(state);
+  const generateStates = (currentState: number[], depth: number) => {
+    if (depth === serviceClasses.length) {
+      const linkLoad = calculateLinkLoad(currentState, topology, serviceClasses);
+      if (isValidLinkLoad(linkLoad, topology)) {
+        validLinkStates.push(linkLoad);
       }
+      return;
     }
-  }
 
-  return validStates;
+    for (let calls = 0; calls <= maxCalls[depth]; calls++) {
+      currentState[depth] = calls;
+      generateStates(currentState, depth + 1);
+    }
+  };
+
+  generateStates(Array(serviceClasses.length).fill(0), 0);
+
+  return validLinkStates;
 };
 
-function isValidState(
+function calculateLinkLoad(
   state: number[],
-  topology: number[],
-  serviceClasses: ServiceClass[]
-): boolean {
+  topology: networkTopology[],
+  serviceClasses: ServiceClassWithRoute[]
+): number[] {
   const linkLoad = Array(topology.length).fill(0);
 
-  for (let i = 0; i < serviceClasses.length; i++) {
-    const calls = state[i];
-    const route = serviceClasses[i].route;
-    const bandwidth = serviceClasses[i].bandwidth;
+  serviceClasses.forEach((serviceClass, scIdx) => {
+    serviceClass.route.forEach((route) => {
+      const linkIdx = topology.findIndex((link) => link.link === route.link);
+      if (linkIdx >= 0) {
+        linkLoad[linkIdx] += state[scIdx] * route.bu;
+      }
+    });
+  });
 
-    for (let linkIndex = 0; linkIndex < route.length; linkIndex++) {
-      linkLoad[linkIndex] += calls * route[linkIndex] * bandwidth;
-    }
-  }
-
-  for (let linkIndex = 0; linkIndex < topology.length; linkIndex++) {
-    if (linkLoad[linkIndex] > topology[linkIndex]) {
-      return false;
-    }
-  }
-
-  return true;
+  return linkLoad;
 }
 
-const topology = [4, 5];
-const serviceClasses: ServiceClass[] = [
-  {
-    serviceClass: 1,
-    lambda: 1,
-    mu: 1,
-    bandwidth: 1,
-    route: [1, 1]
-  },
-  {
-    serviceClass: 2,
-    lambda: 1,
-    mu: 1,
-    bandwidth: 2,
-    route: [0, 1]
-  }
-];
+function isValidLinkLoad(linkLoad: number[], topology: networkTopology[]): boolean {
+  return linkLoad.every((load, idx) => load <= topology[idx].bu);
+}
