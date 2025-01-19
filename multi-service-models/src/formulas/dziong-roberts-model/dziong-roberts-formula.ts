@@ -6,123 +6,100 @@ export const stateProbabilityNetworkTopology = (
   link: networkTopology[],
   serviceClasses: ServiceClassWithRoute[],
   stateProbabilities: { [key: string]: number } = {},
-  validLinkStates: number[][]
+  validStates: number[][],
+  state_j: number[] = []
 ): { [key: string]: number } => {
-  const topologyKey = `q(${link.join(',')})`;
+  const topologyKey = `q(${state_j.join(',')})`;
 
   // Check if this state has already been computed
   if (stateProbabilities[topologyKey] !== undefined) {
     return stateProbabilities;
   }
 
-  // Base case: if all link capacities are zero
-  if (link.every((link) => link.capacity === 0)) {
-    stateProbabilities[topologyKey] = 1.0; // q(0,...,0) = 1
-    return stateProbabilities;
-  }
-
-  // If any link has a negative capacity, the state is invalid
-  if (link.some((link) => link.capacity < 0)) {
+  // Ignore states where any element is negative
+  if (state_j.some((state) => state < 0)) {
     stateProbabilities[topologyKey] = 0;
     return stateProbabilities;
   }
 
+  // Base case: q(0,0,...,0) = 1
+  if (state_j.every((state) => state === 0)) {
+    stateProbabilities[topologyKey] = 1.0;
+    return stateProbabilities;
+  }
+
   let sum = 0;
+  let j_l = 0;
 
   // Iterate over the links in the topology
   link.forEach((link, index) => {
-    // Iterate over the service classes
+    j_l = state_j[index];
+    console.log('link', link);
+
     for (const serviceClass of serviceClasses) {
       const { incomingLoad_a, route } = serviceClass;
       const bandwidth = route[index].bu;
 
-      if (route[index].bu === 0) continue; // Skip if the service class doesn't use this link
+      console.log('serviceClass', serviceClass.serviceClass);
+      console.log('bandwidth:', bandwidth, 'link', link.link);
 
-      if (link.bu >= 0) {
-        const recursedProbabilities = stateProbabilityNetworkTopology(
-          topology,
-          serviceClasses,
-          stateProbabilities,
-          validLinkStates
-        );
-        const recursedKey = `q(${topology.join(',')})`;
+      if (bandwidth === 0) continue; // Skip if the service class doesn't use this link
 
-        const recursedProbability = recursedProbabilities[recursedKey];
+      // Calculate new state for recursion
+      const newState = state_j.map((current, i) => {
+        return Math.max(current - bandwidth, 0); // Ensure non-negative states
+      });
 
-        sum += incomingLoad_a * bandwidth * recursedProbability;
+      // Recursive call to compute the probability for this new state
+      const recursedProbabilities = stateProbabilityNetworkTopology(
+        [link],
+        serviceClasses,
+        stateProbabilities,
+        validStates,
+        newState
+      );
 
-        // if (jl > 0) {
-        //   const result = (1 / jl) * sum;
+      const recursedProbability = recursedProbabilities[`q(${newState.join(',')})`] || 0;
 
-        //   stateProbabilities[topologyKey] = parseFloat(result.toFixed(numberOfDigitsAfterDecimal));
-        // }
-      }
+      sum += incomingLoad_a * bandwidth * recursedProbability;
     }
   });
 
+  const result = j_l > 0 ? (1 / j_l) * sum : 0;
+  stateProbabilities[topologyKey] = result;
+
   return stateProbabilities;
-};
-
-const findValidKeys = (
-  stateValues: { [key: string]: number },
-  validStates: number[][]
-): { [key: string]: number } => {
-  const validKeys: { [key: string]: number } = {};
-
-  for (const key in stateValues) {
-    const matches = key.match(/\d+/g);
-    if (matches) {
-      const arrayKey = matches.map(Number);
-
-      const existsInValidStates = validStates.some(
-        (validState) =>
-          validState.length === arrayKey.length &&
-          validState.every((val, index) => val === arrayKey[index])
-      );
-
-      if (existsInValidStates) {
-        validKeys[key] = stateValues[key];
-      }
-    }
-  }
-
-  return validKeys;
 };
 
 export const dziongRobertsFormula = (
   topology: networkTopology[],
   serviceClasses: ServiceClassWithRoute[]
 ): { [key: string]: number } => {
-  const validLinkStates: number[][] = [];
   const validStates = calculateValidLinkStates(topology, serviceClasses);
-  validStates.forEach((state) => {
-    const n1 = state[0];
-    const n2 = state[1];
+  let stateProbabilities: { [key: string]: number } = {};
 
-    const linkState: number[] = [];
+  console.log('Valid states:', validStates);
 
-    // Calculate the valid link state based on the number of calls for each service class
-    linkState.push(n1);
-    linkState.push(n1 + 2 * n2);
-
-    validLinkStates.push(linkState);
-  });
-
-  const stateProbabilities = stateProbabilityNetworkTopology(
-    topology,
-    serviceClasses,
-    {},
-    validLinkStates
+  validStates.forEach(
+    (state) =>
+      (stateProbabilities = stateProbabilityNetworkTopology(
+        topology,
+        serviceClasses,
+        stateProbabilities,
+        validStates,
+        state
+      ))
   );
 
-  const validStatesinLink = findValidKeys(stateProbabilities, validLinkStates);
-  return validStatesinLink;
+  return stateProbabilities;
 };
 
+// Example data
 const topology = [
   { link: 1, bu: 4 },
   { link: 2, bu: 5 }
 ];
+
 const serviceClasses: ServiceClassWithRoute[] = [
   {
     serviceClass: 1,
@@ -142,4 +119,4 @@ const serviceClasses: ServiceClassWithRoute[] = [
   }
 ];
 
-// console.log(dziongRobertsFormula(topology, serviceClasses));
+console.log(dziongRobertsFormula(topology, serviceClasses));
