@@ -17,6 +17,8 @@ const stateProbability_q = (j: number, serviceClasses: ServiceClass[]): number =
     let sum = 0;
     for (const serviceClass of serviceClasses) {
       const { bu, incomingLoad_a } = serviceClass;
+
+      if (incomingLoad_a === 0 || bu === 0) continue;
       sum += incomingLoad_a * bu * compute(k - bu);
     }
 
