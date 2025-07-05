@@ -1,9 +1,6 @@
 import { unnormalisedLARModel } from './limited-available-resources-model';
 import { ServiceClass } from '../types';
-import {
-  calculateNormalizationConstant_G,
-  normaliseProbabilityValues
-} from '../normalise-probabilities';
+import { normaliseProbabilityValues } from '../normalise-probabilities';
 
 export const calculateLinkUtilization = (
   distinctResourceCount: number,
@@ -17,7 +14,6 @@ export const calculateLinkUtilization = (
     individualResourceCapacity,
     serviceClasses
   );
-  console.log('Probabilities:', probabilities);
 
   normaliseProbabilityValues(probabilities).forEach((prob, index) => {
     result[`q(${index})`] = prob;
@@ -36,5 +32,31 @@ export const linkUtilization_U = (
   serviceClasses: ServiceClass[]
 ): string => {
   const linkUtilization = calculateLinkUtilization(distinctResourceCount, capacity, serviceClasses);
-  return `${linkUtilization.toFixed(7)} b.u`;
+  const totalCapacity = distinctResourceCount * capacity;
+  console.log(`Link Utilization: ${linkUtilization}`);
+  console.log(`Total Capacity: ${totalCapacity}`);
+  const linkUtilizationPercenatge = (linkUtilization / totalCapacity) * 100;
+  return `${linkUtilizationPercenatge} %`;
 };
+
+const distinctResourceCount = 2;
+const capacity = 300;
+const serviceClasses = [
+  {
+    serviceClass: 1,
+    bu: 4,
+    incomingLoad_a: 8
+  },
+  {
+    serviceClass: 2,
+    bu: 8,
+    incomingLoad_a: 9
+  },
+  {
+    serviceClass: 3,
+    bu: 16,
+    incomingLoad_a: 10
+  }
+];
+
+console.log(linkUtilization_U(distinctResourceCount, capacity, serviceClasses));

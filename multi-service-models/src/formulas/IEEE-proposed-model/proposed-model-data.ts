@@ -165,7 +165,7 @@ export const proposedModel = (
 };
 
 //1.11, 1.12, 1.13, 1.2, 1.3
-[0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3].forEach((initialLoad) => {
+[0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.11, 1.12, 1.13, 1.2, 1.3].forEach((initialLoad) => {
   console.log('initialLoad', initialLoad);
   console.log(proposedModel(resourceCount, capacities, initialLoad, serviceClassConfigs));
 });

@@ -11,8 +11,6 @@ export const stateProbabilityNetworkTopology = (
 ): { [key: string]: number } => {
   const topologyKey = `q(${state_j.join(',')})`;
 
-  console.log('state', state_j); // [1, 3]
-
   // Check if this state has already been computed
   if (stateProbabilities[topologyKey] !== undefined) {
     return stateProbabilities;
@@ -36,14 +34,15 @@ export const stateProbabilityNetworkTopology = (
   // Iterate over the links in the topology
   link.forEach((link, index) => {
     j_l = state_j[index];
-    console.log('link', link); // link 1
+    console.log('link', link);
 
+    // Iterate over the service classes
     for (const serviceClass of serviceClasses) {
       const { incomingLoad_a, route } = serviceClass;
       const bandwidth = route[index].bu;
 
       console.log('serviceClass', serviceClass.serviceClass);
-      console.log('bandwidth:', bandwidth, 'link', link.link); // link 1 bu = 1
+      console.log('bandwidth:', bandwidth, 'link', link.link);
 
       if (bandwidth === 0) continue; // Skip if the service class doesn't use this link
 
@@ -52,12 +51,6 @@ export const stateProbabilityNetworkTopology = (
         return Math.max(current - bandwidth, 0); // Ensure non-negative states
       });
 
-      // Check if the new state is part of the valid states
-      if (!validStates.some((validState) => validState.every((val, i) => val === newState[i]))) {
-        continue;
-      }
-
-      console.log('newState:', newState); // [0, 2]
       // Recursive call to compute the probability for this new state
       const recursedProbabilities = stateProbabilityNetworkTopology(
         [link],
@@ -67,14 +60,7 @@ export const stateProbabilityNetworkTopology = (
         newState
       );
 
-      // Check if the new state has already been computed
-
       const recursedProbability = recursedProbabilities[`q(${newState.join(',')})`] || 0;
-
-      console.log('q(${newState.join(', ')})`:', `q(${newState.join(',')})`);
-
-      console.log('recursedProbability:', recursedProbability); // q(0,2) = 1
-      console.log('incomingLoad_a:', incomingLoad_a);
 
       sum += incomingLoad_a * bandwidth * recursedProbability;
     }

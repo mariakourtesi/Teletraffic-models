@@ -2,7 +2,10 @@ import { ServiceClass, ServiceClassWithBR } from '../types';
 import { NUMBER_OF_DIGITS_AFTER_DECIMAL } from '../../constants';
 import { kaufmanRoberts } from './kaufman-roberts-formula';
 
-const calculateLinkUtilization = (capacity: number, serviceClasses: ServiceClass[]): number => {
+export const calculateLinkUtilization = (
+  capacity: number,
+  serviceClasses: ServiceClass[]
+): number => {
   const probabilities = kaufmanRoberts(capacity, serviceClasses);
 
   return Array.from({ length: capacity }, (_, j) => {
@@ -86,3 +89,16 @@ export const meanNumberOfCallsInSystem = (
 
   return meanNumberOfCalls;
 };
+
+const capacity = 300;
+
+const serviceClasses = [
+  { serviceClass: 1, incomingLoad_a: 8, bu: 4 },
+  { serviceClass: 2, incomingLoad_a: 9, bu: 8 },
+  { serviceClass: 3, incomingLoad_a: 10, bu: 16 }
+];
+
+console.log(
+  'Link Utilization in percentage:',
+  (Number(calculateLinkUtilization(capacity, serviceClasses)) / capacity) * 100
+);
