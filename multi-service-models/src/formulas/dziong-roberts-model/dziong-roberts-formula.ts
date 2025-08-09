@@ -11,7 +11,6 @@ export const stateProbabilityNetworkTopology = (
 ): { [key: string]: number } => {
   const stateKey = `q(${currentState.join(',')})`;
 
-
   if (stateProbabilities[stateKey] !== undefined) return stateProbabilities;
 
   if (currentState.some((x) => x < 0)) {
@@ -108,7 +107,6 @@ const serviceClasses: ServiceClassWithRoute[] = [
       { link: 1, bu: 1 },
       { link: 2, bu: 1 },
       { link: 3, bu: 1 }
-
     ]
   },
   {
@@ -120,7 +118,7 @@ const serviceClasses: ServiceClassWithRoute[] = [
       { link: 3, bu: 2 }
     ]
   },
-   {
+  {
     serviceClass: 3,
     incomingLoad_a: 1,
     route: [
@@ -131,4 +129,4 @@ const serviceClasses: ServiceClassWithRoute[] = [
   }
 ];
 
-console.log(dziongRobertsFormula(topology, serviceClasses));
+// console.log(dziongRobertsFormula(topology, serviceClasses));
