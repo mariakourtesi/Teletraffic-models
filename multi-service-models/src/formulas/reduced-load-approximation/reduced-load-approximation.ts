@@ -60,6 +60,9 @@ export const blockingProbabilityNetworkTopology = (
 
     let stateProbabilityValues;
     try {
+  
+      if (link.bu <= 0 || link.bu === undefined) return; // Skip if link capacity is zero or negative
+      
       stateProbabilityValues = kaufmanRoberts(link.bu, newServiceClasses);
       linkStateProbabilities[`link_${link.link}`] = stateProbabilityValues;
     } catch (error) {
@@ -80,7 +83,6 @@ export const blockingProbabilityNetworkTopology = (
     });
   });
 
-  console.log('linkStateProbabilities:', linkStateProbabilities);
   return { finalResult, linkStateProbabilities };
 };
 
@@ -172,3 +174,37 @@ export const callBlockingProbabilityinRLAForProposedModel = (
 
   return logs;
 };
+
+const links = [
+  { link: 1, bu: 780 },
+  { link: 2, bu: 780 }
+];
+
+const serviceClasses = [
+  {
+    serviceClass: 1,
+    incomingLoad_a: 12,
+    route: [
+      { link: 1, bu: 4 },
+      { link: 2, bu: 4 }
+    ]
+  },
+  {
+    serviceClass: 2,
+    incomingLoad_a: 15,
+    route: [
+      { link: 1, bu: 8 },
+      { link: 2, bu: 8 }
+    ]
+  },
+  {
+    serviceClass: 3,
+    incomingLoad_a: 18,
+    route: [
+      { link: 1, bu: 16 },
+      { link: 2, bu: 16 }
+    ]
+  }
+];
+
+console.log(callBlockingProbabilityinRLA(links, serviceClasses));

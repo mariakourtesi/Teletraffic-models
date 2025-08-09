@@ -29,7 +29,6 @@ export const linkUtilization_U = (
   serviceClasses: ServiceClassWithRoute[]
 ): Record<string, string> => {
   const linkUtilization = calculateLinkUtilization(links, serviceClasses);
-  console.log('Link Utilization:', linkUtilization);
   const result: Record<string, string> = {};
   Object.entries(linkUtilization).forEach(([key, value]) => {
     const linkBu = links.find((link) => link.link === parseInt(key.split('_')[1]));
@@ -40,3 +39,37 @@ export const linkUtilization_U = (
   });
   return result;
 };
+
+const links = [
+  { link: 1, bu: 300 },
+  { link: 2, bu: 300 }
+];
+
+const serviceClasses = [
+  {
+    serviceClass: 1,
+    incomingLoad_a: 8,
+    route: [
+      { link: 1, bu: 4 },
+      { link: 2, bu: 4 }
+    ]
+  },
+  {
+    serviceClass: 2,
+    incomingLoad_a: 9,
+    route: [
+      { link: 1, bu: 8 },
+      { link: 2, bu: 8 }
+    ]
+  },
+  {
+    serviceClass: 3,
+    incomingLoad_a: 10,
+    route: [
+      { link: 1, bu: 16 },
+      { link: 2, bu: 16 }
+    ]
+  }
+];
+
+console.log(linkUtilization_U(links, serviceClasses));
