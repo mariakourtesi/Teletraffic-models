@@ -60,9 +60,9 @@ export const blockingProbabilityNetworkTopology = (
 
     let stateProbabilityValues;
     try {
-      console.log('link.bu', link.bu);
+  
       if (link.bu <= 0 || link.bu === undefined) return; // Skip if link capacity is zero or negative
-      console.log('newServiceClasses', newServiceClasses);
+      
       stateProbabilityValues = kaufmanRoberts(link.bu, newServiceClasses);
       linkStateProbabilities[`link_${link.link}`] = stateProbabilityValues;
     } catch (error) {
