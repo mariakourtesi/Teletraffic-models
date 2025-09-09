@@ -15,15 +15,17 @@ export default () =>
     .action((options) => {
       const { links, serviceClasses } = options;
       let parsedServiceClasses: ServiceClassWithRoute[];
+      let parsedLinks;
 
       try {
         parsedServiceClasses = JSON.parse(serviceClasses);
+        parsedLinks = JSON.parse(links);
 
         if (!Array.isArray(parsedServiceClasses) || parsedServiceClasses.length === 0) {
           throw new Error('serviceClasses must be a non-empty array of objects.');
         }
 
-        console.log(callBlockingProbabilityinRLA(links, parsedServiceClasses));
+        console.log(callBlockingProbabilityinRLA(parsedLinks, parsedServiceClasses));
       } catch (error) {
         console.error(`Failed to process serviceClasses: ${error}`);
         process.exit(1);

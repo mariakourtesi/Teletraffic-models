@@ -1,0 +1,15 @@
+[
+  {
+    "serviceClass": 1,
+    "incomingLoad_a": 1,
+    "route": [
+      { "link": 1, "bu": 1 },
+      { "link": 2, "bu": 1 }
+    ]
+  },
+  {
+    "serviceClass": 2,
+    "incomingLoad_a": 1,
+    "route": [{ "link": 2, "bu": 2 }]
+  }
+]
