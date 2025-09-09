@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { ServiceClass } from '../formulas/types';
-import { kaufmanRoberts } from '../formulas/kaufman-roberts/kaufman-roberts-formula';
+import { callBlockingProbability } from '../formulas/kaufman-roberts/call-blocking-probability';
 
 export default () =>
   new Command('kaufman-roberts')
@@ -22,8 +22,14 @@ export default () =>
         if (!Array.isArray(parsedServiceClasses) || parsedServiceClasses.length === 0) {
           throw new Error('serviceClasses must be a non-empty array of objects.');
         }
+        const data = callBlockingProbability(capacity, parsedServiceClasses);
 
-        console.log(kaufmanRoberts(capacity, parsedServiceClasses));
+        console.table(
+          Object.entries(data).map(([key, value]) => ({
+            Class: key,
+            Blocking: value.toFixed(7)
+          }))
+        );
       } catch (error) {
         console.error(`Failed to process serviceClasses: ${error}`);
         process.exit(1);

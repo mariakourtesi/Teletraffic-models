@@ -24,8 +24,14 @@ export default () =>
         if (!Array.isArray(parsedServiceClasses) || parsedServiceClasses.length === 0) {
           throw new Error('serviceClasses must be a non-empty array of objects.');
         }
+        const data = callBlockingProbabilityinRLA(parsedLinks, parsedServiceClasses);
 
-        console.log(callBlockingProbabilityinRLA(parsedLinks, parsedServiceClasses));
+        console.table(
+          Object.entries(data).map(([key, value]) => ({
+            Class: key,
+            Blocking: value.toFixed(7)
+          }))
+        );
       } catch (error) {
         console.error(`Failed to process serviceClasses: ${error}`);
         process.exit(1);
