@@ -40,6 +40,7 @@ export const CBPDziongRoberts = (
     serviceClasses.forEach((sc) => {
       const route = sc.route;
       let isBlocking = false;
+      let link;
 
       for (let i = 0; i < route.length; i++) {
         const linkUsage = route[i];
@@ -50,6 +51,7 @@ export const CBPDziongRoberts = (
 
         if (stateValues[i] + linkBuRequired > topologyLink.bu) {
           isBlocking = true;
+          link = topologyLink.link;
           break;
         }
       }

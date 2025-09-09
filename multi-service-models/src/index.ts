@@ -3,6 +3,7 @@ import { Command } from 'commander';
 import figlet from 'figlet';
 import kaufmanRoberts from './commands/kaufman-roberts';
 import proposedModel from './commands/proposed-model';
+import rla from './commands/reduced-load-approximation';
 
 console.log(figlet.textSync('EMLM'));
 
@@ -15,6 +16,7 @@ export async function execute(args: string[], exitFunction: (code: number) => vo
     );
   program.addCommand(kaufmanRoberts());
   program.addCommand(proposedModel());
+  program.addCommand(rla());
 
   program.exitOverride();
   try {
