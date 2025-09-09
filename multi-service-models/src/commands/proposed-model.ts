@@ -29,7 +29,14 @@ export default () =>
       try {
         parsedServiceClasses = JSON.parse(serviceClasses);
 
-        console.log(proposedModel(resources, capacities, trafficLoad, parsedServiceClasses));
+        const data = proposedModel(resources, capacities, trafficLoad, parsedServiceClasses);
+
+        console.table(
+          Object.entries(data).map(([key, value]) => ({
+            Class: key,
+            Blocking: value.toFixed(7)
+          }))
+        );
       } catch (error) {
         console.error(`Failed to process serviceClasses: ${error}`);
         process.exit(1);
