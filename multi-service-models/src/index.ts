@@ -2,6 +2,7 @@
 import { Command } from 'commander';
 import figlet from 'figlet';
 import kaufmanRoberts from './commands/kaufman-roberts';
+import proposedModel from './commands/proposed-model';
 
 console.log(figlet.textSync('EMLM'));
 
@@ -13,6 +14,7 @@ export async function execute(args: string[], exitFunction: (code: number) => vo
       'A collection of formulas for calculating blocking probabilities in various networks'
     );
   program.addCommand(kaufmanRoberts());
+  program.addCommand(proposedModel());
 
   program.exitOverride();
   try {

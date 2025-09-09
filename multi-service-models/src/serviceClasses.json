@@ -1,0 +1,70 @@
+{
+  "ram": [
+    {
+      "serviceClass": 1,
+      "incomingLoad_a": 0,
+      "bu": 1
+    },
+    {
+      "serviceClass": 2,
+      "incomingLoad_a": 0,
+      "bu": 2
+    },
+    {
+      "serviceClass": 3,
+      "incomingLoad_a": 0,
+      "bu": 3
+    }
+  ],
+  "processor": [
+    {
+      "serviceClass": 1,
+      "incomingLoad_a": 0,
+      "bu": 1
+    },
+    {
+      "serviceClass": 2,
+      "incomingLoad_a": 0,
+      "bu": 2
+    },
+    {
+      "serviceClass": 3,
+      "incomingLoad_a": 0,
+      "bu": 3
+    }
+  ],
+  "disk": [
+    {
+      "serviceClass": 1,
+      "incomingLoad_a": 0,
+      "bu": 1
+    },
+    {
+      "serviceClass": 2,
+      "incomingLoad_a": 0,
+      "bu": 2
+    },
+    {
+      "serviceClass": 3,
+      "incomingLoad_a": 0,
+      "bu": 3
+    }
+  ],
+  "bitrate": [
+    {
+      "serviceClass": 1,
+      "incomingLoad_a": 0,
+      "bu": 2
+    },
+    {
+      "serviceClass": 2,
+      "incomingLoad_a": 0,
+      "bu": 2
+    },
+    {
+      "serviceClass": 3,
+      "incomingLoad_a": 0,
+      "bu": 2
+    }
+  ]
+}
