@@ -3,6 +3,7 @@ import {
   calculateBlockingRatios,
   calculateEi,
   calculateSubsystemBlockingKaufmanRoberts,
+  processResultInDziongRoberts,
   processResultInRLA
 } from './proposed-model';
 import { calculateTrafficLoad } from './traffic-load';
@@ -80,10 +81,96 @@ export const proposedModel = (
 
   const reducedLoadApproximation = processResultInRLA(capacities, serviceClassesinRLA);
 
+  const dziongRoberts = processResultInDziongRoberts(capacities, serviceClassesinRLA);
+
+  console.log('reducedLoadApproximation', processResultInRLA);
+
+  console.log('dziongRoberts', dziongRoberts);
+
   const Ei = calculateEi(relationR, reducedLoadApproximation);
 
-  // console.log(
-  //   `Time taken to execute proposed model: ${performance.now() - startTime} milliseconds`
-  // );
+  console.log(
+    `Time taken to execute proposed model: ${performance.now() - startTime} milliseconds`
+  );
   return Ei;
 };
+
+const capacities: Capacities = {
+  ramCapacity: { link: 1, bu: 10 },
+  processorCapacity: { link: 2, bu: 12 },
+  diskCapacity: { link: 3, bu: 11 },
+  bpsCapacity: { link: 4, bu: 10 }
+};
+
+const serviceClassses = {
+  ram: [
+    {
+      serviceClass: 1,
+      incomingLoad_a: 0,
+      bu: 1
+    },
+    {
+      serviceClass: 2,
+      incomingLoad_a: 0,
+      bu: 2
+    },
+    {
+      serviceClass: 3,
+      incomingLoad_a: 0,
+      bu: 3
+    }
+  ],
+  processor: [
+    {
+      serviceClass: 1,
+      incomingLoad_a: 0,
+      bu: 1
+    },
+    {
+      serviceClass: 2,
+      incomingLoad_a: 0,
+      bu: 2
+    },
+    {
+      serviceClass: 3,
+      incomingLoad_a: 0,
+      bu: 3
+    }
+  ],
+  disk: [
+    {
+      serviceClass: 1,
+      incomingLoad_a: 0,
+      bu: 1
+    },
+    {
+      serviceClass: 2,
+      incomingLoad_a: 0,
+      bu: 2
+    },
+    {
+      serviceClass: 3,
+      incomingLoad_a: 0,
+      bu: 3
+    }
+  ],
+  bitrate: [
+    {
+      serviceClass: 1,
+      incomingLoad_a: 0,
+      bu: 2
+    },
+    {
+      serviceClass: 2,
+      incomingLoad_a: 0,
+      bu: 2
+    },
+    {
+      serviceClass: 3,
+      incomingLoad_a: 0,
+      bu: 2
+    }
+  ]
+};
+
+console.log(proposedModel(3, capacities, 0.9, serviceClassses));

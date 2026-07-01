@@ -95,8 +95,8 @@ export const dziongRobertsFormula = (
 
 const topology = [
   { link: 1, bu: 4 },
-  { link: 2, bu: 5 },
-  { link: 3, bu: 6 }
+  { link: 2, bu: 5 }
+  // { link: 3, bu: 6 }
 ];
 
 const serviceClasses: ServiceClassWithRoute[] = [
@@ -105,8 +105,8 @@ const serviceClasses: ServiceClassWithRoute[] = [
     incomingLoad_a: 1,
     route: [
       { link: 1, bu: 1 },
-      { link: 2, bu: 1 },
-      { link: 3, bu: 1 }
+      { link: 2, bu: 1 }
+      // { link: 3, bu: 1 }
     ]
   },
   {
@@ -114,19 +114,19 @@ const serviceClasses: ServiceClassWithRoute[] = [
     incomingLoad_a: 1,
     route: [
       { link: 1, bu: 0 },
-      { link: 2, bu: 2 },
-      { link: 3, bu: 2 }
-    ]
-  },
-  {
-    serviceClass: 3,
-    incomingLoad_a: 1,
-    route: [
-      { link: 1, bu: 0 },
-      { link: 2, bu: 0 },
-      { link: 3, bu: 1 }
+      { link: 2, bu: 2 }
+      // { link: 3, bu: 2 }
     ]
   }
+  // {
+  //   serviceClass: 3,
+  //   incomingLoad_a: 1,
+  //   route: [
+  //     { link: 1, bu: 0 },
+  //     { link: 2, bu: 0 },
+  //     { link: 3, bu: 1 }
+  //   ]
+  // }
 ];
 
-// console.log(dziongRobertsFormula(topology, serviceClasses));
+console.log(dziongRobertsFormula(topology, serviceClasses));
