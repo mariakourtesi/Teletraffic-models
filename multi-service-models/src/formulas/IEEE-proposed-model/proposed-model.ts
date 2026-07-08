@@ -4,6 +4,7 @@ import { callBlockingProbability } from '../kaufman-roberts/call-blocking-probab
 import { blockingProbabilityLAR } from '../limited-available-resources-model/blocking-probability';
 import { callBlockingProbabilityinRLAForProposedModel } from '../reduced-load-approximation/reduced-load-approximation';
 import { BlockingRatios, Capacities, ServiceClassConfigs } from './types';
+import { CBPDziongRoberts } from '../dziong-roberts-model/call-blocking-probability';
 
 // Step 1: Calculate the blocking probabilities for each subsystem using the Kaufman-Roberts model
 export const calculateSubsystemBlockingKaufmanRoberts = (
@@ -101,14 +102,45 @@ export const processResultInRLA = (
   serviceClasses: ServiceClassWithRoute[]
 ): BlockingRatios => {
   const links = Object.values(capacities);
-  const rla = callBlockingProbabilityinRLAForProposedModel(links, serviceClasses);
+  const dziong = callBlockingProbabilityinRLAForProposedModel(links, serviceClasses);
 
   const result: BlockingRatios = { RAM: {}, Processor: {}, Disk: {}, Bps: {} };
 
-  for (const key in rla) {
-    const value = rla[key];
+  for (const key in dziong) {
+    const value = dziong[key];
 
     const subsystem = Subsystem[key.match(/V_(link\d)/)?.[1] as keyof typeof Subsystem];
+    const classMatch = key.match(/class_(\d+)/);
+    if (classMatch) {
+      const classKey = `B_class_${classMatch[1]}`; // Format as "B_class_X"
+      result[subsystem][classKey] = value;
+    }
+  }
+
+  return result;
+};
+
+//  Step 4b: apply the Dziong-Roberts formula
+export const processResultInDziongRoberts = (
+  capacities: Capacities,
+  serviceClasses: ServiceClassWithRoute[]
+): BlockingRatios => {
+  //console.log(capacities, serviceClasses);
+  const links = Object.values(capacities);
+  console.log('links', links);
+
+  console.log('serviceClasses', serviceClasses);
+  console.log('serviceclassrout', serviceClasses[0].route);
+  const dziong = CBPDziongRoberts(links, serviceClasses);
+
+  console.log('========', dziong);
+
+  const result: BlockingRatios = { RAM: {}, Processor: {}, Disk: {}, Bps: {} };
+
+  for (const key in dziong) {
+    const value = dziong[key];
+
+    const subsystem = Subsystem[key.match(/B_(link\d)/)?.[1] as keyof typeof Subsystem];
     const classMatch = key.match(/class_(\d+)/);
     if (classMatch) {
       const classKey = `B_class_${classMatch[1]}`; // Format as "B_class_X"
